@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 from contextlib import closing
 import pytest
-
 from database import app
 from database import connect_db
 from database import get_database_connection
 from database import init_db
+from flask import session
 
 TEST_DSN = 'dbname=test_wist user=Michelle'
+# Placeholder for "make a list" submit button
+SUBMIT_BTN = '<input type="submit" value="Share" name="Share"/>'
 
 
 def clear_db():
@@ -52,7 +54,7 @@ def run_independent_query(query, params=[]):
 
 def test_make_list(req_context):
     from database import make_list
-    expected = ("My Title", "My description", '1234')
+    expected = ("My Title", "My description", 1234)
     make_list(*expected)
     rows = run_independent_query("SELECT * FROM lists")
     assert len(rows) == 1
@@ -68,7 +70,7 @@ def test_get_all_lists_empty(req_context):
 
 def test_get_all_lists(req_context):
     from database import get_all_lists, make_list
-    expected = ("My Title", "My description", '1234')
+    expected = ("My Title", "My description", 1234)
     make_list(*expected)
     lists = get_all_lists()
     assert len(lists) == 1
@@ -86,7 +88,7 @@ def test_empty_listing(db):
 @pytest.fixture(scope='function')
 def with_list(db, request):
     from database import make_list
-    expected = (u'Test Title', u'Test description', '1234')
+    expected = (u'Test Title', u'Test description', 1234)
     with app.test_request_context('/'):
         make_list(*expected)
         # manually commit to avoid rollback
@@ -115,7 +117,7 @@ def test_add_list(db):
     list_data = {
         u'title': u'Great Title',
         u'description': u'Great description!',
-        u'user_id': '1234'
+        u'user_id': 1234
     }
     actual = app.test_client().post(
         '/add', data=list_data, follow_redirects=True).data
@@ -123,3 +125,55 @@ def test_add_list(db):
     list_data.pop(u'user_id')  # don't need to asser user_id on page
     for expected in list_data.values():
         assert expected in actual
+
+
+def test_do_login_success(req_context):
+    username, password = ('admin', 'admin')
+    from database import do_login
+    assert 'logged_in' not in session
+    do_login(username, password)
+    assert 'logged_in' in session
+
+
+def test_do_login_bad_password(req_context):
+    username = 'admin'
+    bad_pass = 'wrong'
+    from database import do_login
+    with pytest.raises(ValueError):
+        do_login(username, bad_pass)
+
+
+def test_do_login_bad_username(req_context):
+    username = 'bad'
+    password = 'admin'
+    from database import do_login
+    with pytest.raises(ValueError):
+        do_login(username, password)
+
+
+def login_helper(username, password):
+    login_data = {
+        'username': username, 'password': password
+    }
+    client = app.test_client()
+    return client.post(
+        '/login', data=login_data, follow_redirects=True)
+
+
+def test_start_as_anonymous(db):
+    client = app.test_client()
+    anon_home = client.get('/').data
+    # TODO: this test fails, need to implement IF statement in template
+    assert SUBMIT_BTN not in anon_home
+
+
+def test_login_success(db):
+    username, password = ('admin', 'admin')
+    response = login_helper(username, password)
+    assert SUBMIT_BTN in response.data
+
+
+def test_login_fails(db):
+    username, password = ('admin', 'wrong')
+    response = login_helper(username, password)
+    assert 'Login Failed' in response.data

@@ -5,19 +5,36 @@ from flask import abort
 from flask import request
 from flask import url_for
 from flask import redirect
+from flask import session
 import os
 import psycopg2
 from contextlib import closing
+from passlib.hash import pbkdf2_sha256
 
-# TODO: add owner_id constraint
+# TODO: add lists.owner_id constraint
+# TODO: add list_id constraint for list_items and list_users
 DB_SCHEMA = """
 DROP TABLE IF EXISTS lists;
 CREATE TABLE lists (
     list_id serial PRIMARY KEY,
     title VARCHAR (127) NOT NULL,
     description TEXT,
-    owner_id TEXT
-)
+    owner_id INT
+);
+CREATE TABLE users (
+    user_id serial PRIMARY KEY,
+    user_name VARCHAR (127) NOT NULL,
+    user_info TEXT,
+    icon_color TEXT);
+CREATE TABLE list_items (
+    list_id INT,
+    item_id serial PRIMARY KEY,
+    text TEXT NOT NULL,
+    checked INT NOT NULL
+    );
+CREATE TABLE list_users (
+    list_id INT,
+    user_id INT)
 """
 DB_LIST_INSERT = """
 INSERT INTO lists (title, description, owner_id) values (%s, %s, %s)
@@ -31,6 +48,10 @@ app = Flask(__name__)
 
 app.config['DATABASE'] = os.environ.get('DATABASE_URL',
                                         'dbname=wist user=Michelle')
+app.config['ADMIN_USERNAME'] = os.environ.get('ADMIN_USERNAME', 'admin')
+app.config['ADMIN_PASSWORD'] = os.environ.get('ADMIN_PASSWORD',
+                                              pbkdf2_sha256.encrypt('admin'))
+app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', 'soopersekret')
 
 
 def connect_db():
@@ -105,6 +126,28 @@ def add_list():
     except psycopg2.Error:
         abort(500)
     return redirect(url_for('show_lists'))
+
+
+def do_login(username='', passwd=''):
+    if username != app.config['ADMIN_USERNAME']:
+        raise ValueError
+    if not pbkdf2_sha256.verify(passwd, app.config['ADMIN_PASSWORD']):
+        raise ValueError
+    session['logged_in'] = True
+
+
+def login():
+    error = None
+    if request.method == 'POST':
+        try:
+            do_login(request.form['username'].encode('utf-8'),
+                     request.form['password'].encode('utf-8'))
+        except ValueError:
+            error = "Login Failed"
+        else:
+            return redirect(url_for('show_entries'))
+    # TODO: Implement once we have templates
+    # return render_template('login.html', error=error)
 
 
 if __name__ == '__main__':
