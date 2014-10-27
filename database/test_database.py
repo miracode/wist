@@ -74,4 +74,38 @@ def test_get_all_lists(req_context):
     assert len(lists) == 1
     for l in lists:
         assert expected[0] == l['title']
-        assert expected[1] == l['text']
+        assert expected[1] == l['description']
+
+
+def test_empty_listing(db):
+    actual = app.test_client().get('/').data
+    expected = "No lists here so far"
+    assert expected in actual
+
+
+@pytest.fixture(scope='function')
+def with_list(db, request):
+    from database import make_list
+    expected = (u'Test Title', u'Test description', 1234)
+    with app.test_request_context('/'):
+        make_list(*expected)
+        # manually commit to avoid rollback
+        get_database_connection().commit()
+
+    def cleanup():
+        with app.test_request_context('/'):
+            con = get_database_connection()
+            cur = con.cursor()
+            cur.execute("DELETE FROM lists")
+            # manually commit to avoice rollback
+            con.commit()
+    request.addfinalizer(cleanup)
+
+    return expected
+
+
+def test_listing(with_list):
+    expected = with_list[:-1]  # cut off user_id
+    actual = app.test_client().get('/').data
+    for value in expected:
+        assert value in actual

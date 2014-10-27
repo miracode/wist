@@ -12,7 +12,7 @@ CREATE TABLE lists (
     list_id serial PRIMARY KEY,
     title VARCHAR (127) NOT NULL,
     description TEXT,
-    owner_id INT
+    owner_id TEXT
 )
 """
 DB_LIST_INSERT = """
@@ -43,7 +43,7 @@ def init_db():
 
 def get_database_connection():
     db = getattr(g, 'db', None)
-    if not db:
+    if db is None:
         g.db = db = connect_db()
     return db
 
@@ -51,7 +51,7 @@ def get_database_connection():
 @app.teardown_request
 def teardown_request(exception):
     db = getattr(g, 'db', None)
-    if db:
+    if db is not None:
         if exception and isinstance(exception, psycopg2.Error):
             # rollback if any errors
             db.rollback()
@@ -78,13 +78,20 @@ def get_all_lists():
     con = get_database_connection()
     cur = con.cursor()
     cur.execute(DB_ALL_USER_LISTS)
-    keys = ("list_id", "title", "text", "created")
+    keys = ('list_id', 'title', 'description', 'owner_id')
     return [dict(zip(keys, row)) for row in cur.fetchall()]
 
 
 @app.route('/')
-def welcome():
-    return u"Welcome to Wist\n"
+def show_lists():
+    lists = get_all_lists()
+    output = u""
+    for l in lists:
+        output += u'Title: %s\nDescription: %s\n\n' % (l['title'],
+                                                       l['description'])
+    if output == u"":
+        output = u"No lists here so far"
+    return output
 
 
 if __name__ == '__main__':
