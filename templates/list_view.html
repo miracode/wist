@@ -3,6 +3,7 @@
     <link rel="stylesheet" type="text/css" href="../static/foundation/css/foundation.css">
     <link rel="stylesheet" type="text/css" href="../static/foundation/css/normalize.css">
     <link rel="stylesheet" type="text/css" href="../static/base.css">
+    <link rel="stylesheet" type="text/css" href="../static/list_view.css">
 </head>
 <div id='top-nav'>
     <div class='row'>
@@ -19,5 +20,57 @@
 </div>
 <div id='container'>
     <!--templating goes here-->
+    <div class='row'>
+        <div class='large-12 columns'>
+            <h1 class='list-name'>Groceries</h1>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='large-1 columns profile-picture-small'></div>
+        <div class='large-11 columns'>
+            <!-- <div class='profile-picture-small'></div> -->
+            <p class='created-by'>CREATED BY USER</p>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='large-12 columns line'></div>
+    </div>
+    <div class='row'>
+        <!-- list items -->
+        <div class='large-9 columns list-display'>
+            <div class='row'>
+                <div class='large-11 columns list-item'>
+                    <button class='check-button'></button>
+                    <p class='list-item-name'>Thing</p>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='large-11 columns list-item'>
+                    <button class='check-button'></button>
+                    <p class='list-item-name'>Thing 2: THING HARDER</p>
+                </div>
+            </div>
+        </div>
+        <!-- list options -->
+        <div class='large-3 columns list-options'>
+            <div class='row'>
+                <div class='large-12 columns list-options-item'>
+                    <h2>Users</h2>
+                    <div class='profile-picture-small-side'></div>
+                    <div class='profile-picture-small-side'></div>
+                    <div class='profile-picture-small-side'></div>
+                    <div class='profile-picture-small-side'></div>
+                    <div class='profile-picture-small-side'></div>
+                    <div class='profile-picture-small-side'></div>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='large-12 columns list-options-item'>
+                    <a href=#><h2>Options</h2></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end template -->
 </div>
 </html>
