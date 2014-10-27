@@ -1,0 +1,35 @@
+body {
+    background-color: #66baff;
+}
+
+#top-nav{
+    height: 50px;
+    background-color: #1191fb;
+    border-bottom: 2px solid #c4e4ff
+}
+
+#container {
+    background-color: #fff;
+    width: 1050px;
+    padding: 40px;
+    border: 5px solid #c4e4ff;
+    margin: auto;
+    margin-top: 50px;
+    border-radius: 30px;
+}
+
+.nav-item {
+    border-left: 1px solid white;
+    color: white;
+    padding-top: 10px;
+    text-align: center;
+    height: 48px;
+}
+
+.nav-item:hover{
+    background-color: #08477B
+}
+
+.last-nav-item {
+    border-right: 1px solid white;
+}
