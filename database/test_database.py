@@ -52,7 +52,7 @@ def run_independent_query(query, params=[]):
 
 def test_make_list(req_context):
     from database import make_list
-    expected = ("My Title", "My description", 1234)
+    expected = ("My Title", "My description", '1234')
     make_list(*expected)
     rows = run_independent_query("SELECT * FROM lists")
     assert len(rows) == 1
@@ -68,7 +68,7 @@ def test_get_all_lists_empty(req_context):
 
 def test_get_all_lists(req_context):
     from database import get_all_lists, make_list
-    expected = ("My Title", "My description", 1234)
+    expected = ("My Title", "My description", '1234')
     make_list(*expected)
     lists = get_all_lists()
     assert len(lists) == 1
@@ -86,7 +86,7 @@ def test_empty_listing(db):
 @pytest.fixture(scope='function')
 def with_list(db, request):
     from database import make_list
-    expected = (u'Test Title', u'Test description', 1234)
+    expected = (u'Test Title', u'Test description', '1234')
     with app.test_request_context('/'):
         make_list(*expected)
         # manually commit to avoid rollback
@@ -109,3 +109,17 @@ def test_listing(with_list):
     actual = app.test_client().get('/').data
     for value in expected:
         assert value in actual
+
+
+def test_add_list(db):
+    list_data = {
+        u'title': u'Great Title',
+        u'description': u'Great description!',
+        u'user_id': '1234'
+    }
+    actual = app.test_client().post(
+        '/add', data=list_data, follow_redirects=True).data
+    assert 'No lists here so far' not in actual
+    list_data.pop(u'user_id')  # don't need to asser user_id on page
+    for expected in list_data.values():
+        assert expected in actual

@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from flask import Flask
 from flask import g
+from flask import abort
+from flask import request
+from flask import url_for
+from flask import redirect
 import os
 import psycopg2
 from contextlib import closing
@@ -92,6 +96,15 @@ def show_lists():
     if output == u"":
         output = u"No lists here so far"
     return output
+
+
+@app.route('/add', methods=['POST'])
+def add_list():
+    try:
+        make_list(request.form['title'], request.form['description'], '1234')
+    except psycopg2.Error:
+        abort(500)
+    return redirect(url_for('show_lists'))
 
 
 if __name__ == '__main__':
