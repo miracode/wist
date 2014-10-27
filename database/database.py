@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask
+from flask import g
 import os
 import psycopg2
 from contextlib import closing
@@ -30,6 +31,27 @@ def init_db():
     with closing(connect_db()) as db:
         db.cursor().execute(DB_SCHEMA)
         db.commit()
+
+
+def get_database_connection():
+    db = getattr(g, 'db', None)
+    if not db:
+        g.db = db = connect_db()
+    return db
+
+
+@app.teardown_request
+def teardown_request(exception):
+    db = getattr(g, 'db', None)
+    if db:
+        if exception and isinstance(exception, psycopg2.Error):
+            # rollback if any errors
+            db.rollback()
+        else:
+            # otherwise, good to commit
+            db.commit()
+        db.close()
+
 
 @app.route('/')
 def welcome():
