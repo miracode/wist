@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import flask
 from flask import Flask
 from flask import g
 import os
@@ -20,6 +21,7 @@ app = Flask(__name__)
 
 app.config['DATABASE'] = os.environ.get('DATABASE_URL',
                                         'dbname=wist user=Michelle')
+
 
 def connect_db():
     """Return connection to configured db"""
