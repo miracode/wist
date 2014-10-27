@@ -58,3 +58,20 @@ def test_make_list(req_context):
     assert len(rows) == 1
     for val in expected:
         assert val in rows[0]
+
+
+def test_get_all_lists_empty(req_context):
+    from database import get_all_lists
+    lists = get_all_lists()
+    assert len(lists) == 0
+
+
+def test_get_all_lists(req_context):
+    from database import get_all_lists, make_list
+    expected = ("My Title", "My description", 1234)
+    make_list(*expected)
+    lists = get_all_lists()
+    assert len(lists) == 1
+    for l in lists:
+        assert expected[0] == l['title']
+        assert expected[1] == l['text']

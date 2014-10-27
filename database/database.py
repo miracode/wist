@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import flask
 from flask import Flask
 from flask import g
 import os
@@ -15,6 +14,13 @@ CREATE TABLE lists (
     description TEXT,
     owner_id INT
 )
+"""
+DB_LIST_INSERT = """
+INSERT INTO lists (title, description, owner_id) values (%s, %s, %s)
+"""
+# TODO add where user_id = id
+DB_ALL_USER_LISTS = """
+SELECT list_id, title, description FROM lists ORDER BY list_id
 """
 
 app = Flask(__name__)
@@ -55,9 +61,31 @@ def teardown_request(exception):
         db.close()
 
 
+def make_list(title, description, user_id):
+    # User does not input user_id, this comes from login info
+    if not user_id:
+        raise ValueError("User required to create a list")
+    # User needs to supply a title, but no description is OK
+    if not title or not user_id:
+        raise ValueError("Title required to create a list")
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_LIST_INSERT, [title, description, user_id])
+
+
+def get_all_lists():
+    """return a list of all lists as dicts"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_ALL_USER_LISTS)
+    keys = ("list_id", "title", "text", "created")
+    return [dict(zip(keys, row)) for row in cur.fetchall()]
+
+
 @app.route('/')
 def welcome():
-    return u"Welcome to Wist"
+    return u"Welcome to Wist\n"
+
 
 if __name__ == '__main__':
     app.run(debug=True)
