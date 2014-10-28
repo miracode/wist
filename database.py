@@ -132,7 +132,7 @@ where user_id = %s;
 app = Flask(__name__)
 
 app.config['DATABASE'] = os.environ.get('DATABASE_URL',
-                                        'dbname=wist user=Michelle')
+                                        'dbname=wist user=mark')
 app.config['ADMIN_USERNAME'] = os.environ.get('ADMIN_USERNAME', 'admin')
 app.config['ADMIN_PASSWORD'] = os.environ.get('ADMIN_PASSWORD',
                                               pbkdf2_sha256.encrypt('admin'))
@@ -317,25 +317,25 @@ def delete_user(user_id):
     cur.execute(DB_USER_DELETE, [user_id, user_id, user_id])
 
 
-@app.route('/')
-def show_lists(user_id):
-    lists = get_all_users_lists(user_id)
-    output = u""
-    for l in lists:
-        output += u'Title: %s\nDescription: %s\n\n' % (l['title'],
-                                                       l['description'])
-    if output == u"":
-        output = u"No lists here so far"
-    return output
+# @app.route('/')
+# def show_lists(user_id):
+#     lists = get_all_users_lists(user_id)
+#     output = u""
+#     for l in lists:
+#         output += u'Title: %s\nDescription: %s\n\n' % (l['title'],
+#                                                        l['description'])
+#     if output == u"":
+#         output = u"No lists here so far"
+#     return output
 
 
-@app.route('/add', methods=['POST'])
-def add_list():
-    try:
-        make_list(request.form['title'], request.form['description'], '1234')
-    except psycopg2.Error:
-        abort(500)
-    return redirect(url_for('show_lists'))
+# @app.route('/add', methods=['POST'])
+# def add_list():
+#     try:
+#         make_list(request.form['title'], request.form['description'], '1234')
+#     except psycopg2.Error:
+#         abort(500)
+#     return redirect(url_for('show_lists'))
 
 
 def do_login(username='', passwd=''):

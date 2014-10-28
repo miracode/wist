@@ -17,7 +17,7 @@
     </div>
     <div class='large-push-5 large-2 columns login-container'>
         <div class='login-form-box'>
-            <form>
+            <form method='POST' action='{{url_for("register")}}'>
                 <input id='toggle' type='hidden' value='login'>
                 <div id='username'>
                     <input placeholder='Username' class='username-box' type='text' name='username' />
