@@ -70,7 +70,7 @@ INSERT INTO list_users (list_id, user_id) VALUES (%s, %s)
 # DB SELECT statements
 DB_ALL_USER_LISTS = """
 SELECT list_id, title, description FROM lists
-WHERE user_id = %s
+WHERE owner_id = %s
 ORDER BY list_id
 """
 DB_ALL_LIST_ITEMS = """

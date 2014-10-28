@@ -120,10 +120,13 @@ def test_add_list_user(req_context):
         assert val in rows[0]
 
 
-# def test_get_all_lists_empty(req_context):
-#     from database import get_all_lists
-#     lists = get_all_lists()
-#     assert len(lists) == 0
+def test_get_all_lists_empty(req_context):
+    from database import insert_user
+    from database import get_all_users_lists
+    insert_user("Test User", "pass", "email@email.com")
+    user_id = run_independent_query("SELECT user_id FROM users")[0][0]
+    lists = get_all_users_lists(user_id)
+    assert len(lists) == 0
 
 
 # def test_get_all_lists(req_context):
