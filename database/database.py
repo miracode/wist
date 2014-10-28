@@ -43,7 +43,7 @@ CREATE TABLE list_items (
     item_id serial NOT NULL,
     text TEXT NOT NULL,
     checked INT NOT NULL,
-    PRIMARY KEY (list_id, item_id)
+    PRIMARY KEY (list_id, item_id),
     CHECK (checked in (0, 1))
 );
 CREATE TABLE list_users (
