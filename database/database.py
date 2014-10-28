@@ -28,6 +28,7 @@ CREATE TABLE users (
     user_id serial PRIMARY KEY,
     user_name VARCHAR (127) NOT NULL,
     user_passwd VARCHAR (127) NOT NULL,
+    user_email TEXT NOT NULL,
     user_info TEXT,
     icon_color TEXT REFERENCES colors (color)
 );
@@ -55,7 +56,7 @@ INSERT INTO colors VALUES ('purple');
 """
 # DB INSERT statements
 DB_USER_INSERT = """
-INSERT INTO users (user_name, user_passwd) values (%s, %s)
+INSERT INTO users (user_name, user_passwd, user_email) values (%s, %s, %s)
 """
 DB_LIST_INSERT = """
 INSERT INTO lists (title, description, owner_id) values (%s, %s, %s)
@@ -77,7 +78,7 @@ SELECT item_id, text, checked FROM list_items
 WHERE list_id = %s
 """
 DB_ALL_LIST_USERS = """
-SELECT list_id FROM list_users WHERE user_id = %s
+SELECT user_id FROM list_users WHERE list_id = %s
 """
 # DB UPDATE statements
 DB_USER_INFO_UPDATE = """
@@ -169,8 +170,26 @@ def teardown_request(exception):
             db.commit()
         db.close()
 
+"""
+DB INSERTS
+"""
+
+
+def insert_user(name, passwd, email):
+    """insert a user's name, password, and email; generate an ID"""
+    if not name:
+        raise ValueError("User name required to create user")
+    if not passwd:
+        raise ValueError("User password required to create user")
+    if not email:
+        raise ValueError("User email required to create user")
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_USER_INSERT, [name, passwd, email])
+
 
 def make_list(title, description, user_id):
+    """Make an empty list for user with a title and description"""
     # User does not input user_id, this comes from login info
     if not user_id:
         raise ValueError("User required to create a list")
@@ -182,18 +201,125 @@ def make_list(title, description, user_id):
     cur.execute(DB_LIST_INSERT, [title, description, user_id])
 
 
-def get_all_lists():
-    """return a list of all lists as dicts"""
+def insert_list_item(list_id, text):
+    """Add an unchecked item to a list"""
+    if not list_id:
+        raise ValueError("List must be specified")
+    if not text:
+        raise ValueError("List item must contain text")
     con = get_database_connection()
     cur = con.cursor()
-    cur.execute(DB_ALL_USER_LISTS)
-    keys = ('list_id', 'title', 'description', 'owner_id')
+    cur.execute(DB_LIST_ITEM_INSERT, [list_id, text])
+
+
+def add_list_user(list_id, user_id):
+    """Add a user to a list by the list_id and their user_id"""
+    if not list_id:
+        raise ValueError("List must be specified")
+    if not user_id:
+        raise ValueError("User must be specified")
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_LIST_USER_INSERT, [list_id, user_id])
+
+"""
+DB SELECTS/RETURNS
+"""
+
+
+def get_all_users_lists(user_id):
+    """Return a list of all the user's lists as dicts"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_ALL_USER_LISTS, [user_id])
+    keys = ('list_id', 'title', 'description')
     return [dict(zip(keys, row)) for row in cur.fetchall()]
 
 
+def get_all_list_items(list_id):
+    """Return a list of specified list's items as dicts"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_ALL_LIST_ITEMS, [list_id])
+    keys = ('item_id', 'text', 'checked')
+    return [dict(zip(keys, row)) for row in cur.fetchall()]
+
+
+def get_all_list_users(list_id):
+    """Return users of a given list as dicts"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_ALL_LIST_USERS, [list_id])
+    keys = ('list_id')
+    return [dict(zip(keys, row)) for row in cur.fetchall()]
+
+"""
+DB UPDATES
+"""
+
+
+def update_user_info(user_id, user_info):
+    """Update the user's information text"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_USER_INFO_UPDATE, [user_id, user_info])
+
+
+def user_color_update(color, user_id):
+    """Update user icon color"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_USER_COLOR_UPDATE, [color, user_id])
+
+
+def update_list_title_text(title, description, list_id):
+    """Update a lists title and description"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_LIST_TITLE_TEXT_UPDATE, [title, description, list_id])
+
+
+def update_item_checkmark(checked, list_id, item_id):
+    """Update list item checkmark"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_LIST_ITEM_CHECK_UPDATE, [checked, list_id, item_id])
+
+"""
+DB DELETIONS
+"""
+
+
+def delete_list_item(list_id, item_id):
+    """Delete an item from a list"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_LIST_ITEM_DELETE, [list_id, item_id])
+
+
+def delete_list(list_id):
+    """Delete an entire list"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_LIST_DELETE, [list_id, list_id])
+
+
+def delete_list_user(list_id, user_id):
+    """Remove a user's permission to a list"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_LIST_USER_DELETE, [list_id, user_id])
+
+
+def delete_user(user_id):
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_USER_DELETE, [user_id, user_id, user_id])
+
+
 @app.route('/')
-def show_lists():
-    lists = get_all_lists()
+def show_lists(user_id):
+    lists = get_all_users_lists(user_id)
     output = u""
     for l in lists:
         output += u'Title: %s\nDescription: %s\n\n' % (l['title'],
