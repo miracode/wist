@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from contextlib import closing
 import pytest
+import os.path
+import sys
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                             os.pardir))
 from database import app
 from database import connect_db
 from database import get_database_connection
