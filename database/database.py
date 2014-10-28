@@ -11,18 +11,26 @@ import psycopg2
 from contextlib import closing
 from passlib.hash import pbkdf2_sha256
 
-# TODO: add lists.owner_id constraint
-# TODO: add list_id constraint for list_items and list_users
+# INITIALIZE DATABASE
+# This will drop all tables and re-initialize the database
+# Note constraints on tables.  Colors table is initialized with
+# values here also.
 DB_SCHEMA = """
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS lists;
-DROP TABLE IF EXISTS list_items;
 DROP TABLE IF EXISTS list_users;
+DROP TABLE IF EXISTS list_items;
+DROP TABLE IF EXISTS lists;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS colors;
+CREATE TABLE colors (
+    color TEXT PRIMARY KEY
+);
 CREATE TABLE users (
     user_id serial PRIMARY KEY,
     user_name VARCHAR (127) NOT NULL,
+    user_passwd VARCHAR (127) NOT NULL,
     user_info TEXT,
-    icon_color TEXT);
+    icon_color TEXT REFERENCES colors (color)
+);
 CREATE TABLE lists (
     list_id serial PRIMARY KEY,
     title VARCHAR (127) NOT NULL,
@@ -30,22 +38,94 @@ CREATE TABLE lists (
     owner_id INT REFERENCES users (user_id)
 );
 CREATE TABLE list_items (
-    list_id INT NOT NULL,
+    list_id INT NOT NULL REFERENCES lists (list_id),
     item_id serial NOT NULL,
     text TEXT NOT NULL,
     checked INT NOT NULL,
     PRIMARY KEY (list_id, item_id)
-    );
+    CHECK (checked in (0, 1))
+);
 CREATE TABLE list_users (
-    list_id INT,
-    user_id INT)
+    list_id INT REFERENCES lists (list_id),
+    user_id INT REFERENCES users (user_id)
+);
+INSERT INTO colors VALUES ('green');
+INSERT INTO colors VALUES ('blue');
+INSERT INTO colors VALUES ('purple');
+"""
+# DB INSERT statements
+DB_USER_INSERT = """
+INSERT INTO users (user_name, user_passwd) values (%s, %s)
 """
 DB_LIST_INSERT = """
 INSERT INTO lists (title, description, owner_id) values (%s, %s, %s)
 """
-# TODO add where user_id = id
+DB_LIST_ITEM_INSERT = """
+INSERT INTO list_items (list_id, text, checked) VALUES (%s, %s, 0)
+"""
+DB_LIST_USER_INSERT = """
+INSERT INTO list_users (list_id, user_id) VALUES (%s, %s)
+"""
+# DB SELECT statements
 DB_ALL_USER_LISTS = """
-SELECT list_id, title, description FROM lists ORDER BY list_id
+SELECT list_id, title, description FROM lists
+WHERE user_id = %s
+ORDER BY list_id
+"""
+DB_ALL_LIST_ITEMS = """
+SELECT item_id, text, checked FROM list_items
+WHERE list_id = %s
+"""
+DB_ALL_LIST_USERS = """
+SELECT list_id FROM list_users WHERE user_id = %s
+"""
+# DB UPDATE statements
+DB_USER_INFO_UPDATE = """
+UPDATE users
+SET user_info = %s
+WHERE user_id = %s
+"""
+DB_USER_COLOR_UPDATE = """
+UPDATE users
+SET icon_color = %s
+WHERE user_id = %s
+"""
+DB_LIST_TITLE_TEXT_UPDATE = """
+UPDATE lists
+SET title = %s,
+    description = %s
+WHERE list_id = %s
+"""
+DB_LIST_ITEM_CHECK_UPDATE = """
+UPDATE list_items
+SET checked = %s
+WHERE list_id = %s
+AND item_id = %s
+"""
+# DELETE statements
+DB_LIST_ITEM_DELETE = """
+DELETE from list_items
+WHERE list_id = %s
+AND item_id = %s
+"""
+DB_LIST_DELETE = """
+DELETE FROM list_items
+WHERE list_id = %s;
+DELETE FROM lists
+WHERE list_id = %s
+"""
+DB_LIST_USER_DELETE = """
+DELETE FROM list_users
+WHERE list_id = %s
+AND user_id = %s
+"""
+DB_USER_DELETE = """
+DELETE from list_users
+WHERE user_id = %s;
+DELETE from lists
+WHERE user_id = %s;
+DELETE FROM users
+where user_id = %s;
 """
 
 app = Flask(__name__)
