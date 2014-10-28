@@ -28,7 +28,7 @@ CREATE TABLE users (
     user_id serial PRIMARY KEY,
     user_name VARCHAR (127) NOT NULL,
     user_passwd VARCHAR (127) NOT NULL,
-    user_email TEXT NOT NULL,
+    user_email TEXT UNIQUE NOT NULL,
     user_info TEXT,
     icon_color TEXT REFERENCES colors (color)
 );
