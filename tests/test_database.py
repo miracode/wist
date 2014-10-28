@@ -86,6 +86,22 @@ def test_make_list(req_context):
         assert val in rows[0]
 
 
+def test_add_item(req_context):
+    from database import insert_user
+    from database import make_list
+    from database import insert_list_item
+    insert_user("Test User", "pass", "email@email.com")
+    user_id = run_independent_query("SELECT user_id FROM users")[0][0]
+    make_list("My Title", "My description", user_id)
+    list_id = run_independent_query("SELECT * FROM lists")[0][0]
+    expected = (list_id, "Item of a list")
+    insert_list_item(*expected)
+    rows = run_independent_query("SELECT * from list_items")
+    assert len(rows) == 1
+    for val in expected:
+        assert val in rows[0]
+
+
 # def test_get_all_lists_empty(req_context):
 #     from database import get_all_lists
 #     lists = get_all_lists()
