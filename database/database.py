@@ -14,23 +14,27 @@ from passlib.hash import pbkdf2_sha256
 # TODO: add lists.owner_id constraint
 # TODO: add list_id constraint for list_items and list_users
 DB_SCHEMA = """
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS lists;
-CREATE TABLE lists (
-    list_id serial PRIMARY KEY,
-    title VARCHAR (127) NOT NULL,
-    description TEXT,
-    owner_id INT
-);
+DROP TABLE IF EXISTS list_items;
+DROP TABLE IF EXISTS list_users;
 CREATE TABLE users (
     user_id serial PRIMARY KEY,
     user_name VARCHAR (127) NOT NULL,
     user_info TEXT,
     icon_color TEXT);
+CREATE TABLE lists (
+    list_id serial PRIMARY KEY,
+    title VARCHAR (127) NOT NULL,
+    description TEXT,
+    owner_id INT REFERENCES users (user_id)
+);
 CREATE TABLE list_items (
-    list_id INT,
-    item_id serial PRIMARY KEY,
+    list_id INT NOT NULL,
+    item_id serial NOT NULL,
     text TEXT NOT NULL,
-    checked INT NOT NULL
+    checked INT NOT NULL,
+    PRIMARY KEY (list_id, item_id)
     );
 CREATE TABLE list_users (
     list_id INT,
