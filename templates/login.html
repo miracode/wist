@@ -4,6 +4,8 @@
     <link rel="stylesheet" type="text/css" href="../static/foundation/css/foundation.css">
     <link rel="stylesheet" type="text/css" href="../static/foundation/css/normalize.css">
     <link rel="stylesheet" type='text/css' href='../static/login.css'>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src='../static/login.js'></script>
     <link href='http://fonts.googleapis.com/css?family=Titillium+Web:200' rel='stylesheet' type='text/css'>
 </head>
 <body>
@@ -16,14 +18,18 @@
     <div class='large-push-5 large-2 columns login-container'>
         <div class='login-form-box'>
             <form>
-                <div class='username'>
+                <input id='toggle' type='hidden' value='login'>
+                <div id='username'>
                     <input placeholder='Username' class='username-box' type='text' name='username' />
                 </div>
-                <div class='password'>
+                <div id='password'>
                     <input placeholder='Password' class='password-box' type='text' name='password' />
                 </div>
-                <div class='submit-button'>
+                <div id='login-button'>
                     <input type='submit' value='Login' name='login' class='medium round button login-button' />
+                </div>
+                <div class='register-link'>
+                    <p id='register-toggle'><a href=#>Don't have an account? Sign up now</a></p>
                 </div>
             </form>
         </div>
