@@ -124,7 +124,7 @@ DB_USER_DELETE = """
 DELETE from list_users
 WHERE user_id = %s;
 DELETE from lists
-WHERE user_id = %s;
+WHERE owner_id = %s;
 DELETE FROM users
 where user_id = %s;
 """

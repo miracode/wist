@@ -235,3 +235,19 @@ def test_delete_list(req_context):
     delete_list(list_id)
     lists = get_all_users_lists(user_id)
     assert len(lists) == 0
+
+def test_delete_list_user(req_context):
+    from database import insert_user, make_list, add_list_user
+    from database import delete_user
+    insert_user("Test User", "password", "email@email.com")
+    insert_user("Test User2", "password2", "email2@email.com")
+    user_id1 = run_independent_query("SELECT user_id FROM users")[0][0]
+    user_id2 = run_independent_query("SELECT user_id FROM users")[1][0]
+    make_list("Title", "Description", user_id1)
+    list_id = run_independent_query("SELECT * FROM lists")[0][0]
+    add_list_user(list_id, user_id2)
+    delete_user(user_id2)
+    users = run_independent_query("SELECT * FROM users")
+    print users
+    assert len(users) == 1
+
