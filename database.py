@@ -250,7 +250,7 @@ def get_all_list_users(list_id):
     con = get_database_connection()
     cur = con.cursor()
     cur.execute(DB_ALL_LIST_USERS, [list_id])
-    keys = ('list_id')
+    keys = [u'list_id']
     return [dict(zip(keys, row)) for row in cur.fetchall()]
 
 """
