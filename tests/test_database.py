@@ -238,6 +238,20 @@ def test_delete_list(req_context):
 
 def test_delete_list_user(req_context):
     from database import insert_user, make_list, add_list_user
+    from database import delete_list_user, get_all_list_users
+    insert_user("Test User", "password", "email@email.com")
+    insert_user("Test User2", "password2", "email2@email.com")
+    user_id1 = run_independent_query("SELECT user_id FROM users")[0][0]
+    user_id2 = run_independent_query("SELECT user_id FROM users")[1][0]
+    make_list("Title", "Description", user_id1)
+    list_id = run_independent_query("SELECT * FROM lists")[0][0]
+    add_list_user(list_id, user_id2)
+    delete_list_user(list_id, user_id2)
+    list_users = get_all_list_users(list_id)
+    assert len(list_users) == 0
+
+def test_delete_user(req_context):
+    from database import insert_user, make_list, add_list_user
     from database import delete_user
     insert_user("Test User", "password", "email@email.com")
     insert_user("Test User2", "password2", "email2@email.com")
