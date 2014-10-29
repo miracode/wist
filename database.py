@@ -83,6 +83,13 @@ SELECT user_id FROM list_users WHERE list_id = %s
 DB_USER_SELECT_BY_NAME = """
 SELECT user_id, user_passwd FROM users WHERE user_name = %s
 """
+DB_USER_SELECT_BY_ID = """
+SELECT user_name FROM users WHERE user_id = %s
+"""
+DB_LIST_INFO_BY_ID = """
+SELECT title, description, owner_id FROM lists
+WHERE list_id = %s
+"""
 # DB UPDATE statements
 DB_USER_INFO_UPDATE = """
 UPDATE users
@@ -229,10 +236,32 @@ def add_list_user(list_id, user_id):
 DB SELECTS/RETURNS
 """
 
+
+def get_user_name(user_id):
+    """Returns user name when given user id"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_USER_SELECT_BY_ID, [user_id])
+    keys = ('user_name', )
+    return [dict(zip(keys, row)) for row in cur.fetchall()]
+
+
 def get_login_user(user_name):
     """Attempts to return the password and user id searching by username"""
     con = get_database_connection()
     cur = con.cursor()
+    cur.execute(DB_USER_SELECT_BY_NAME, [user_name])
+    keys = ('user_id', 'user_passwd')
+    return [dict(zip(keys, row)) for row in cur.fetchall()]
+
+
+def get_list_info(list_id):
+    """Return list title, desc, and owner_id by list_id"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_LIST_INFO_BY_ID, [list_id])
+    keys = ('title', 'description', 'owner_id')
+    return [dict(zip(keys, row)) for row in cur.fetchall()]
 
 
 def get_all_users_lists(user_id):
