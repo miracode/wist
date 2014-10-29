@@ -177,3 +177,16 @@ def test_update_user_color(req_context):
     rows = run_independent_query("SELECT user_id, icon_color FROM users")
     for val in expected:
         assert val in rows[0]
+
+
+def test_update_list_title_test(req_context):
+    from database import insert_user, make_list, update_list_title_text
+    insert_user("Test User", "password", "email@email.com")
+    user_id = run_independent_query("SELECT user_id FROM users")[0][0]
+    make_list("Title", "Description", user_id)
+    list_id = run_independent_query("SELECT * FROM lists")[0][0]
+    expected = ("New Title", "New description")
+    update_list_title_text(*expected, list_id=list_id)
+    rows = run_independent_query("SELECT title, description FROM lists")
+    for val in expected:
+        assert val in rows[0]
