@@ -18,12 +18,12 @@
     <div class='large-push-5 large-2 columns login-container'>
         <div class='login-form-box'>
             <form method='POST' action='{{url_for("register")}}'>
-                <input id='toggle' type='hidden' value='login'>
+                <input id='toggle' type='hidden' name='toggle' value='login'>
                 <div id='username'>
                     <input placeholder='Username' class='username-box' type='text' name='username' />
                 </div>
                 <div id='password'>
-                    <input placeholder='Password' class='password-box' type='text' name='password' />
+                    <input placeholder='Password' class='password-box' type='password' name='password' />
                 </div>
                 <div id='email'>
                 </div>
