@@ -59,6 +59,7 @@
     margin-top: 2px;
     margin-left: 2px;
     padding: 0;
+    border: none;
 }
 
 
@@ -71,4 +72,40 @@
     padding: 0 10px 10px 0;
     margin-bottom: 10px;
     border-bottom: 3px solid #ccc
+}
+
+.form-container {
+    background-color: #c4e4ff;
+    margin: 15px 30px;
+    border-radius: 15px;
+    padding: 8px;
+}
+
+.form-label {
+    text-align: center;
+    font-size: 30px;
+}
+
+.list-description-box {
+    margin-left: 5%;
+    margin-top: 10px;
+    width: 90%;
+}
+
+.list-title-box {
+    margin-left: 5%;
+    width: 90%
+}
+
+.delete-button {
+    background-color: #f00;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    margin-right: 25px;
+    margin-top: 2px;
+    margin-left: 2px;
+    padding: 0;
+    float: right;
+    border: none;
 }

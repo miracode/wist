@@ -14,15 +14,52 @@ from passlib.hash import pbkdf2_sha256
 from database import *
 
 
-@app.route('/login')
+@app.route('/')
 def show_login():
     return render_template('login.html')
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def register():
-    insert_user(request.form['username'], request.form['password'], request.form['email'])
-    return('YOU DID IT')
+    if request.form['toggle'] == 'register':
+        insert_user(request.form['username'], request.form['password'], request.form['email'])
+        return('You registered')
+    else:
+        return('You tried to log in')
+
+
+@app.route('/lists/all', methods=['GET'])
+def show_lists():
+    return render_template('list_all.html')
+
+
+@app.route('/lists/view')
+def display_list():
+    return render_template('list_view.html')
+
+
+@app.route('/lists/create', methods=['GET', 'POST'])
+def create_list():
+    make_list(request.form['list-title'], request.form['list-description'], request.form['user_id'])
+    return('YOU MADE A WIST!')
+
+
+@app.route('/lists/item/check', methods=['GET', 'POST'])
+def check_item():
+    #update_item_checkmark(checked, list_id, item_id) <--boolean?
+    return('YOU CHECKED A THING')
+
+
+@app.route('/lists/item/add', methods=['GET', 'POST'])
+def add_item():
+    #insert_list_item(list_id, request.form['list-item-title'])
+    return('YOU ADDED A THING!')
+
+
+@app.route('/lists/item/remove', methods=['GET', 'POST'])
+def remove_item():
+    #delete_list_item(list_id, item_id)
+    return('YOU DELETED A THING!')
 
 if __name__ == '__main__':
     app.run(debug=True)
