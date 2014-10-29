@@ -67,10 +67,12 @@ def create_list():
     return redirect(url_for('show_lists'))
 
 
-@app.route('/lists/<id>/check', methods=['GET', 'POST'])
-def check_item():
-    #update_item_checkmark(checked, list_id, item_id) <--boolean?
-    return('YOU CHECKED A THING')
+@app.route('/lists/<list_id>/check', methods=['GET', 'POST'])
+def check_item(list_id):
+    print(request.data)
+    item_id = request.form.get('item_id', 0, type=int)
+    update_item_checkmark(1, list_id, item_id)
+    return('YOU CHECKED A THING' + str(list_id) + ' ' + str(item_id))
 
 
 @app.route('/lists/<id>/add', methods=['GET', 'POST'])

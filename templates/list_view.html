@@ -22,7 +22,7 @@
                 {% for item in items %}
                 <div class='row'>
                     <div class='large-11 columns list-item'>
-                        <input type='button' class='check-button' value='check' data-item-id='{{item.item_id}}' />
+                        <input type='button' class='check-button' value='check' data-item-id='{{item.item_id}}' data-list-id='{{list_id}}' />
                         <input type='submit' class='delete-button' value=''/>
                         <p class='list-item-name'>{{item.text}}</p>
                     </div>
