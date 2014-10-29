@@ -80,6 +80,9 @@ WHERE list_id = %s
 DB_ALL_LIST_USERS = """
 SELECT user_id FROM list_users WHERE list_id = %s
 """
+DB_USER_SELECT_BY_NAME = """
+SELECT user_id, user_passwd FROM users WHERE user_name = %s
+"""
 # DB UPDATE statements
 DB_USER_INFO_UPDATE = """
 UPDATE users
@@ -225,6 +228,11 @@ def add_list_user(list_id, user_id):
 """
 DB SELECTS/RETURNS
 """
+
+def get_login_user(user_name):
+    """Attempts to return the password and user id searching by username"""
+    con = get_database_connection()
+    cur = con.cursor()
 
 
 def get_all_users_lists(user_id):

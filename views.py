@@ -14,6 +14,13 @@ from passlib.hash import pbkdf2_sha256
 from database import *
 
 
+def do_login(db_pwd, user_id, username='', passwd=''):
+    if passwd != db_passwd:
+        raise ValueError
+    session['logged_in'] = True
+    session['user_id'] = user_id
+
+
 @app.route('/')
 def show_login():
     return render_template('login.html')
@@ -22,9 +29,10 @@ def show_login():
 @app.route('/login', methods=['GET', 'POST'])
 def register():
     if request.form['toggle'] == 'register':
-        insert_user(request.form['username'], request.form['password'], request.form['email'])
+        insert_user(request.form['username'], pbkdf2_sha256.encrypt(request.form['password']), request.form['email'])
         return('You registered')
     else:
+        
         return('You tried to log in')
 
 
