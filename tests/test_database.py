@@ -222,3 +222,16 @@ def test_delete_list_item(req_context):
     delete_list_item(list_id, item_id)
     list_items = get_all_list_items(list_id)
     assert len(list_items) == 0
+
+
+def test_delete_list(req_context):
+    from database import insert_user, make_list, insert_list_item
+    from database import delete_list, get_all_users_lists
+    insert_user("Test User", "password", "email@email.com")
+    user_id = run_independent_query("SELECT user_id FROM users")[0][0]
+    make_list("Title", "Description", user_id)
+    list_id = run_independent_query("SELECT * FROM lists")[0][0]
+    insert_list_item(list_id, "Do this")
+    delete_list(list_id)
+    lists = get_all_users_lists(user_id)
+    assert len(lists) == 0
