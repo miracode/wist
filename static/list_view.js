@@ -1,20 +1,13 @@
-var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-
-
-$("[data-list-id=*]").click(function(){
-    $.getJSON($SCRIPT_ROOT + '/')
-    $(this).attr('data-list-id')
+$(document).ready(function(){
+    $(".check-button").click(function(){
+        $.ajax($SCRIPT_ROOT + '/lists/' + $(this).attr('data-list-id') + '/check', {
+            type: 'POST',
+            data: {item_id: $(this).attr('data-item-id')}
+        }).done(function(){
+            console.log($(this).attr('data-item-id'))
+            alert('checked! Things are awesome.')
+        }).fail(function(){
+            alert('everything died')
+        })
+    })
 })
-
-
-  $(function() {
-    $('a#calculate').bind('click', function() {
-      $.getJSON($SCRIPT_ROOT + '/_add_numbers', {
-        a: $('input[name="a"]').val(),
-        b: $('input[name="b"]').val()
-      }, function(data) {
-        $("#result").text(data.result);
-      });
-      return false;
-    });
-  });
