@@ -129,15 +129,17 @@ def test_get_all_lists_empty(req_context):
     assert len(lists) == 0
 
 
-# def test_get_all_lists(req_context):
-#     from database import get_all_lists, make_list
-#     expected = ("My Title", "My description", 1234)
-#     make_list(*expected)
-#     lists = get_all_lists()
-#     assert len(lists) == 1
-#     for l in lists:
-#         assert expected[0] == l['title']
-#         assert expected[1] == l['description']
+def test_get_all_lists(req_context):
+    from database import get_all_users_lists, make_list, insert_user
+    insert_user("Test User", "pass", "email@email.com")
+    user_id = run_independent_query("SELECT user_id FROM users")[0][0]
+    expected = ("My Title", "My description", user_id)
+    make_list(*expected)
+    lists = get_all_users_lists(user_id)
+    assert len(lists) == 1
+    for l in lists:
+        assert expected[0] == l['title']
+        assert expected[1] == l['description']
 
 
 # def test_empty_listing(db):
