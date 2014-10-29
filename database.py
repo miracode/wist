@@ -134,7 +134,7 @@ DB_USER_DELETE = """
 DELETE from list_users
 WHERE user_id = %s;
 DELETE from lists
-WHERE user_id = %s;
+WHERE owner_id = %s;
 DELETE FROM users
 where user_id = %s;
 """
@@ -142,7 +142,7 @@ where user_id = %s;
 app = Flask(__name__)
 
 app.config['DATABASE'] = os.environ.get('DATABASE_URL',
-                                        'dbname=wist user=mark')
+                                        'dbname=wist user=Michelle')
 app.config['ADMIN_USERNAME'] = os.environ.get('ADMIN_USERNAME', 'admin')
 app.config['ADMIN_PASSWORD'] = os.environ.get('ADMIN_PASSWORD',
                                               pbkdf2_sha256.encrypt('admin'))
@@ -287,7 +287,7 @@ def get_all_list_users(list_id):
     con = get_database_connection()
     cur = con.cursor()
     cur.execute(DB_ALL_LIST_USERS, [list_id])
-    keys = ('list_id')
+    keys = [u'list_id']
     return [dict(zip(keys, row)) for row in cur.fetchall()]
 
 """
@@ -295,11 +295,11 @@ DB UPDATES
 """
 
 
-def update_user_info(user_id, user_info):
+def update_user_info(user_info, user_id):
     """Update the user's information text"""
     con = get_database_connection()
     cur = con.cursor()
-    cur.execute(DB_USER_INFO_UPDATE, [user_id, user_info])
+    cur.execute(DB_USER_INFO_UPDATE, [user_info, user_id])
 
 
 def user_color_update(color, user_id):
