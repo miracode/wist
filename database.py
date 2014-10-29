@@ -28,7 +28,7 @@ CREATE TABLE users (
     user_id serial PRIMARY KEY,
     user_name VARCHAR (127) NOT NULL,
     user_passwd VARCHAR (127) NOT NULL,
-    user_email TEXT NOT NULL,
+    user_email TEXT UNIQUE NOT NULL,
     user_info TEXT,
     icon_color TEXT REFERENCES colors (color)
 );
@@ -70,7 +70,7 @@ INSERT INTO list_users (list_id, user_id) VALUES (%s, %s)
 # DB SELECT statements
 DB_ALL_USER_LISTS = """
 SELECT list_id, title, description FROM lists
-WHERE user_id = %s
+WHERE owner_id = %s
 ORDER BY list_id
 """
 DB_ALL_LIST_ITEMS = """
