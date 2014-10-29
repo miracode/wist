@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="../static/login.css">
     <link rel="stylesheet" type="text/css" href="../static/list_view.css">
     <link rel="stylesheet" type="text/css" href="../static/profile.css">
-
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 </head>
 <div id='top-nav'>
     <div class='row'>
@@ -22,6 +22,7 @@
     </div>
 </div>
 <div id='container'>
+    {% block body %}{% endblock %}
     <!--templating goes here-->
 </div>
 </html>
