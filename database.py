@@ -258,11 +258,11 @@ DB UPDATES
 """
 
 
-def update_user_info(user_id, user_info):
+def update_user_info(user_info, user_id):
     """Update the user's information text"""
     con = get_database_connection()
     cur = con.cursor()
-    cur.execute(DB_USER_INFO_UPDATE, [user_id, user_info])
+    cur.execute(DB_USER_INFO_UPDATE, [user_info, user_id])
 
 
 def user_color_update(color, user_id):

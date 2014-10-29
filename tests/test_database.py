@@ -155,3 +155,14 @@ def test_get_all_list_users(req_context):
     add_list_user(list_id, user_id2)
     actual = get_all_list_users(list_id)[0]['list_id']
     assert user_id2 == actual
+
+
+def test_update_user_info(req_context):
+    from database import insert_user, update_user_info
+    insert_user("Test User", "password", "email@email.com")
+    user_id = run_independent_query("SELECT user_id FROM users")[0][0]
+    expected = ("This is my user info!", user_id)
+    update_user_info(*expected)
+    rows = run_independent_query("SELECT user_id, user_info FROM users")
+    for val in expected:
+        assert val in rows[0]
