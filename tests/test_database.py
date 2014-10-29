@@ -190,3 +190,19 @@ def test_update_list_title_test(req_context):
     rows = run_independent_query("SELECT title, description FROM lists")
     for val in expected:
         assert val in rows[0]
+
+
+def test_update_checkmark(req_context):
+    from database import insert_user, make_list, insert_list_item
+    from database import update_item_checkmark
+    insert_user("Test User", "password", "email@email.com")
+    user_id = run_independent_query("SELECT user_id FROM users")[0][0]
+    make_list("Title", "Description", user_id)
+    list_id = run_independent_query("SELECT * FROM lists")[0][0]
+    insert_list_item(list_id, "Do this")
+    item_id = run_independent_query("SELECT * FROM list_items")[0][1]
+    check_zero = run_independent_query("SELECT checked FROM list_items")[0][0]
+    assert check_zero == 0
+    update_item_checkmark(1, list_id, item_id)
+    check_one = run_independent_query("SELECT checked FROM list_items")[0][0]
+    assert check_one == 1
