@@ -151,7 +151,7 @@ def test_get_all_list_users(req_context):
     user_id2 = run_independent_query("SELECT user_id FROM users")[1][0]
     make_list("My Title", "My description", user_id1)
     list_id = run_independent_query("SELECT * FROM lists")[0][0]
-    print  list_id, user_id1, user_id2
+    print list_id, user_id1, user_id2
     add_list_user(list_id, user_id2)
     actual = get_all_list_users(list_id)[0]['list_id']
     assert user_id2 == actual
@@ -200,9 +200,25 @@ def test_update_checkmark(req_context):
     make_list("Title", "Description", user_id)
     list_id = run_independent_query("SELECT * FROM lists")[0][0]
     insert_list_item(list_id, "Do this")
+    # item_id is second result in query
     item_id = run_independent_query("SELECT * FROM list_items")[0][1]
     check_zero = run_independent_query("SELECT checked FROM list_items")[0][0]
     assert check_zero == 0
     update_item_checkmark(1, list_id, item_id)
     check_one = run_independent_query("SELECT checked FROM list_items")[0][0]
     assert check_one == 1
+
+
+def test_delete_list_item(req_context):
+    from database import insert_user, make_list, insert_list_item
+    from database import delete_list_item, get_all_list_items
+    insert_user("Test User", "password", "email@email.com")
+    user_id = run_independent_query("SELECT user_id FROM users")[0][0]
+    make_list("Title", "Description", user_id)
+    list_id = run_independent_query("SELECT * FROM lists")[0][0]
+    insert_list_item(list_id, "Do this")
+    # item_id is second result in query
+    item_id = run_independent_query("SELECT * FROM list_items")[0][1]
+    delete_list_item(list_id, item_id)
+    list_items = get_all_list_items(list_id)
+    assert len(list_items) == 0
