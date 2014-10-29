@@ -166,3 +166,14 @@ def test_update_user_info(req_context):
     rows = run_independent_query("SELECT user_id, user_info FROM users")
     for val in expected:
         assert val in rows[0]
+
+
+def test_update_user_color(req_context):
+    from database import insert_user, user_color_update
+    insert_user("Test User", "password", "email@email.com")
+    user_id = run_independent_query("SELECT user_id FROM users")[0][0]
+    expected = ('green', user_id)
+    user_color_update(*expected)
+    rows = run_independent_query("SELECT user_id, icon_color FROM users")
+    for val in expected:
+        assert val in rows[0]
