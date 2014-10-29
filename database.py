@@ -325,48 +325,5 @@ def delete_user(user_id):
     cur.execute(DB_USER_DELETE, [user_id, user_id, user_id])
 
 
-# @app.route('/')
-# def show_lists(user_id):
-#     lists = get_all_users_lists(user_id)
-#     output = u""
-#     for l in lists:
-#         output += u'Title: %s\nDescription: %s\n\n' % (l['title'],
-#                                                        l['description'])
-#     if output == u"":
-#         output = u"No lists here so far"
-#     return output
-
-
-# @app.route('/add', methods=['POST'])
-# def add_list():
-#     try:
-#         make_list(request.form['title'], request.form['description'], '1234')
-#     except psycopg2.Error:
-#         abort(500)
-#     return redirect(url_for('show_lists'))
-
-
-def do_login(username='', passwd=''):
-    if username != app.config['ADMIN_USERNAME']:
-        raise ValueError
-    if not pbkdf2_sha256.verify(passwd, app.config['ADMIN_PASSWORD']):
-        raise ValueError
-    session['logged_in'] = True
-
-
-def login():
-    error = None
-    if request.method == 'POST':
-        try:
-            do_login(request.form['username'].encode('utf-8'),
-                     request.form['password'].encode('utf-8'))
-        except ValueError:
-            error = "Login Failed"
-        else:
-            return redirect(url_for('show_entries'))
-    # TODO: Implement once we have templates
-    # return render_template('login.html', error=error)
-
-
 if __name__ == '__main__':
     app.run(debug=True)
