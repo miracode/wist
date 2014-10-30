@@ -15,6 +15,8 @@ from database import *
 
 
 def do_login(db_pwd, user_id, username='', passwd=''):
+    if username not in get_all_user_names():
+        raise ValueError("Invalid Username")
     if not pbkdf2_sha256.verify(passwd, db_pwd):
         raise ValueError
     session['logged_in'] = True
@@ -42,6 +44,8 @@ def register():
         return('You registered')
     else:
         user_data = get_login_user(request.form['username'])
+        if user_data == []:
+            raise ValueError("Invalid Username or Password")
         do_login(user_data[0]['user_passwd'], user_data[0]['user_id'], request.form['username'], request.form['password'])
         if session['logged_in']:
             return redirect(url_for('show_lists'))

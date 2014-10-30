@@ -68,6 +68,9 @@ DB_LIST_USER_INSERT = """
 INSERT INTO list_users (list_id, user_id) VALUES (%s, %s)
 """
 # DB SELECT statements
+DB_ALL_USERNAMES = """
+SELECT user_name FROM users
+"""
 DB_ALL_USER_LISTS = """
 SELECT list_id, title, description FROM lists
 WHERE owner_id = %s
@@ -142,7 +145,7 @@ where user_id = %s;
 app = Flask(__name__)
 
 app.config['DATABASE'] = os.environ.get('DATABASE_URL',
-                                        'dbname=wist user=mark')
+                                        'dbname=wist user=Michelle')
 app.config['ADMIN_USERNAME'] = os.environ.get('ADMIN_USERNAME', 'admin')
 app.config['ADMIN_PASSWORD'] = os.environ.get('ADMIN_PASSWORD',
                                               pbkdf2_sha256.encrypt('admin'))
@@ -238,12 +241,14 @@ DB SELECTS/RETURNS
 
 
 def get_user_name(user_id):
-    """Returns user name when given user id"""
+    """Returns single user name as string when given user id"""
     con = get_database_connection()
     cur = con.cursor()
     cur.execute(DB_USER_SELECT_BY_ID, [user_id])
-    keys = ('user_name', )
-    return [dict(zip(keys, row)) for row in cur.fetchall()]
+    rows = cur.fetchall()
+    if rows == []:
+        raise ValueError("Invalid Username")
+    return rows[0][0]
 
 
 def get_named_user(user_name):
@@ -297,8 +302,16 @@ def get_all_list_users(list_id):
     con = get_database_connection()
     cur = con.cursor()
     cur.execute(DB_ALL_LIST_USERS, [list_id])
-    keys = [u'list_id']
+    keys = ('list_id', )
     return [dict(zip(keys, row)) for row in cur.fetchall()]
+
+
+def get_all_user_names():
+    """Return all usernames as a list of strings"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_ALL_USERNAMES)
+    return [row[0] for row in cur.fetchall()]
 
 """
 DB UPDATES
