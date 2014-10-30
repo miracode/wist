@@ -117,7 +117,7 @@ def check_item(list_id):
     item_id = request.form.get('item_id', 0, type=int)
     is_checked = get_is_checked(list_id)
     new_check = (is_checked + 1) % 2
-    update_item_checkmark(new_check, list_id, item_id)
+    update_item_checkmark(new_check, item_id)
     return('YOU CHECKED A THING' + str(list_id) + ' ' + str(item_id))
 
 
@@ -140,7 +140,6 @@ def share_list(list_id):
     user_data = get_login_user(user_name)
     user_id = user_data[0]['user_id']
     add_list_user(list_id, user_id)
-    return('YOU DID IT')
 
 
 @app.route('/logout', methods=['GET', 'POST'])
