@@ -91,7 +91,7 @@ def add_item(id):
 def remove_item(list_id):
     item_id = request.form.get('item_id', 0, type=int)
     delete_list_item(list_id, item_id)
-    return('YOU DELETED A THING!')
+    return redirect(url_for('display_list', id=list_id))
 
 
 @app.route('/lists/<list_id>/share', methods=['GET', 'POST'])

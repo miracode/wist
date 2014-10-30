@@ -11,7 +11,6 @@ $(document).ready(function(){
     })
 
     $(".delete-button").click(function(){
-        console.log($(this).attr('data-item-id'))
         $.ajax($SCRIPT_ROOT + '/lists/' + $(this).attr('data-list-id') + '/remove', {
             type: 'POST',
             data: {item_id: $(this).attr('data-item-id')}
