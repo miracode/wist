@@ -157,6 +157,16 @@ def test_get_all_list_users(req_context):
     assert user_id2 == actual
 
 
+def test_get_login_user(req_context):
+    from database import insert_user, get_login_user
+    insert_user("Test User", "pass", "email@email.com")
+    user_id = run_independent_query("SELECT user_id FROM users")[0][0]
+    actual = get_login_user("Test User")
+    assert actual[0]['user_id'] == user_id
+    assert actual[0]['user_passwd'] == "pass"
+
+
+
 def test_update_user_info(req_context):
     from database import insert_user, update_user_info
     insert_user("Test User", "password", "email@email.com")
@@ -278,3 +288,10 @@ def test_get_all_user_names(req_context):
         assert name in users
 
 
+def test_get_user_name(req_context):
+    from database import insert_user, get_user_name
+    name = "Bob"
+    insert_user(name, "pass", "email")
+    user_id = run_independent_query("SELECT user_id FROM users")[0][0]
+    actual = get_user_name(user_id)
+    assert actual == name

@@ -145,7 +145,7 @@ where user_id = %s;
 app = Flask(__name__)
 
 app.config['DATABASE'] = os.environ.get('DATABASE_URL',
-                                        'dbname=wist user=mark')
+                                        'dbname=wist user=Michelle')
 app.config['ADMIN_USERNAME'] = os.environ.get('ADMIN_USERNAME', 'admin')
 app.config['ADMIN_PASSWORD'] = os.environ.get('ADMIN_PASSWORD',
                                               pbkdf2_sha256.encrypt('admin'))
@@ -241,12 +241,14 @@ DB SELECTS/RETURNS
 
 
 def get_user_name(user_id):
-    """Returns user name when given user id"""
+    """Returns single user name as string when given user id"""
     con = get_database_connection()
     cur = con.cursor()
     cur.execute(DB_USER_SELECT_BY_ID, [user_id])
-    keys = ('user_name', )
-    return [dict(zip(keys, row)) for row in cur.fetchall()]
+    rows = cur.fetchall()
+    if rows == []:
+        raise ValueError("Invalid Username")
+    return rows[0][0]
 
 
 def get_login_user(user_name):
