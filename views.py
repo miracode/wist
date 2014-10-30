@@ -14,8 +14,9 @@ def do_login(db_pwd, user_id, username='', passwd=''):
         return redirect(url_for('register'))
         #raise ValueError("Invalid Username or Password")
     if not pbkdf2_sha256.verify(passwd, db_pwd):
-        # TODO: redirect back to home page with message
-        raise ValueError("Invalid Username or Password")
+        # TODO: redirect back to home page --with message--
+        return redirect(url_for('register'))
+        #raise ValueError("Invalid Username or Password")
     session['logged_in'] = True
     session['user_id'] = user_id
 
@@ -43,7 +44,7 @@ def register():
         user_data = get_login_user(request.form['username'])
         do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
                  request.form['username'], request.form['password'])
-        return redirect(url_for('show_lists')) # TODO pass a msg "you registerd"
+        return redirect(url_for('show_lists_register_sucess'))
     else:
         user_data = get_login_user(request.form['username'])
         if user_data == []:
@@ -57,7 +58,18 @@ def register():
 @app.route('/lists/all', methods=['GET'])
 def show_lists():
     lists = get_all_users_lists(session['user_id'])
-    return render_template('list_all.html', lists=lists)
+    user = get_user_name(session['user_id'])
+    message = "%s's Lists" % user
+    return render_template('list_all.html', lists=lists, message=message)
+
+
+# This doesn't work
+@app.route('/lists/all', methods=['GET'])
+def show_lists_register_sucess():
+    lists = get_all_users_lists(session['user_id'])
+    user = get_user_name(session['user_id'])
+    message = "Thank you for registering %s!" % user
+    return render_template('list_all.html', lists=lists, message=message)
 
 
 @app.route('/lists/<id>')
