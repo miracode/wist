@@ -46,6 +46,7 @@
         <div class='large-3 columns list-options'>
             <div class='row'>
                 <div class='large-12 columns list-options-item'>
+
                     <h2>Users</h2>
                     <div class='profile-picture-small-side'></div>
                     <div class='profile-picture-small-side'></div>
@@ -53,6 +54,15 @@
                     <div class='profile-picture-small-side'></div>
                     <div class='profile-picture-small-side'></div>
                     <div class='profile-picture-small-side'></div>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='large-12 columns list-options-item'>
+                    <h3>Share your list</h3>
+                    <form method='POST' action='{{url_for("share_list", list_id=list_id)}}'>
+                        <input type='text' name='shared_user'>
+                        <input type='submit' value='Share!'>
+                    </form>
                 </div>
             </div>
             <div class='row'>
