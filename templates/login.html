@@ -19,9 +19,9 @@
         <div class='login-form-box'>
             <form method='POST' action='{{url_for("register")}}'>
                 <input id='toggle' type='hidden' name='toggle' value='login'>
-                {% if error %}
+                {% if error -%}
                 <p class="error"><srong>Error:</strong> {{ error }}
-                {% endif %}
+                {%- endif %}
                 <div id='username'>
                     <input placeholder='Username' class='username-box' type='text' name='username' required/>
                 </div>

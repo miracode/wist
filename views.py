@@ -37,36 +37,53 @@ def register():
     if request.method == 'POST':
         try:
             if request.form['toggle'] == 'register':
-                insert_user(request.form['username'],
-                            pbkdf2_sha256.encrypt(request.form['password']),
-                            request.form['email'])
-                user_data = get_login_user(request.form['username'])
-                do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
-                         request.form['username'], request.form['password'])
-                return redirect(url_for('show_lists_register_sucess'))
+                new_register()
+                return redirect(url_for('welcome_lists'))
             else:
-                user_data = get_login_user(request.form['username'])
-                if user_data == []:
-                    raise ValueError
-                do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
-                         request.form['username'], request.form['password'])
-                if session['logged_in']:
-                    return redirect(url_for('show_lists'))
+                login()
+                return redirect(url_for('show_lists'))
         except ValueError:
             error = "Invalid Username or Password"
     return render_template('login.html', error=error)
 
 
+def new_register():
+    insert_user(request.form['username'],
+                pbkdf2_sha256.encrypt(request.form['password']),
+                request.form['email'])
+    user_data = get_login_user(request.form['username'])
+    do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
+             request.form['username'], request.form['password'])
+
+
+def login():
+    user_data = get_login_user(request.form['username'])
+    if user_data == []:
+        raise ValueError
+    do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
+             request.form['username'], request.form['password'])
+    if session['logged_in']:
+        return
+
+
 @app.route('/lists/all', methods=['GET'])
 def show_lists():
     lists = get_all_users_lists(session['user_id'])
-    user = get_user_name(session['user_id'])
-    message = "%s's Lists" % user
+    username = get_user_name(session['user_id'])
     shared_list_ids = get_all_shared_lists(session['user_id'])
     shared_lists = [get_list_info(list_id)[0] for list_id in shared_list_ids]
-    return render_template('list_all.html', lists=lists, 
-        shared_lists = shared_lists, message=message,
-        user_id=session['user_id'])
+    return render_template('list_all.html', lists=lists,
+        shared_lists = shared_lists, user_id=session['user_id'],
+        username=username, newRegister = False)
+
+
+@app.route('/lists/welcome', methods=['GET'])
+def welcome_lists():
+    lists = get_all_users_lists(session['user_id'])
+    username = get_user_name(session['user_id'])
+    return render_template('list_all.html', lists=lists,
+                           username=username, user_id=session['user_id'],
+                           newRegister=True)
 
 
 @app.route('/lists/<id>')
