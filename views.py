@@ -16,9 +16,11 @@ from database import *
 
 def do_login(db_pwd, user_id, username='', passwd=''):
     if username not in get_all_user_names():
-        raise ValueError("Invalid Username")
+        # TODO: Redirect back to home page with message
+        raise ValueError("Invalid Username or Password")
     if not pbkdf2_sha256.verify(passwd, db_pwd):
-        raise ValueError
+        # TODO: redirect back to home page with message
+        raise ValueError("Invalid Username or Password")
     session['logged_in'] = True
     session['user_id'] = user_id
 
