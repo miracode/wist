@@ -2,6 +2,10 @@ body {
     background-color: #66baff;
 }
 
+.top-link {
+    color: white
+}
+
 #top-nav{
     height: 50px;
     background-color: #1191fb;

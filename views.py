@@ -96,7 +96,7 @@ def add_item(id):
 def remove_item(list_id):
     item_id = request.form.get('item_id', 0, type=int)
     delete_list_item(list_id, item_id)
-    return('YOU DELETED A THING!')
+    return redirect(url_for('display_list', id=list_id))
 
 
 @app.route('/lists/<list_id>/share', methods=['GET', 'POST'])
@@ -106,6 +106,13 @@ def share_list(list_id):
     user_id = user_data[0]['user_id']
     add_list_user(list_id, user_id)
     return('YOU DID IT')
+
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session.pop('logged_in', None)
+    session.pop('user_id', None)
+    return redirect(url_for('show_login'))
 
 if __name__ == '__main__':
     app.run(debug=True)
