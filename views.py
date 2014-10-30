@@ -10,13 +10,9 @@ from database import *
 
 def do_login(db_pwd, user_id, username='', passwd=''):
     if username not in get_all_user_names():
-        # TODO: Redirect back to home page --with message--
-        return redirect(url_for('register'))
-        #raise ValueError("Invalid Username or Password")
+        raise ValueError("Invalid Username or Password")
     if not pbkdf2_sha256.verify(passwd, db_pwd):
-        # TODO: redirect back to home page --with message--
-        return redirect(url_for('register'))
-        #raise ValueError("Invalid Username or Password")
+        raise ValueError("Invalid Username or Password")
     session['logged_in'] = True
     session['user_id'] = user_id
 
@@ -37,22 +33,28 @@ def show_login():
 
 @app.route('/login', methods=['GET', 'POST'])
 def register():
-    if request.form['toggle'] == 'register':
-        insert_user(request.form['username'],
-                    pbkdf2_sha256.encrypt(request.form['password']),
-                    request.form['email'])
-        user_data = get_login_user(request.form['username'])
-        do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
-                 request.form['username'], request.form['password'])
-        return redirect(url_for('show_lists_register_sucess'))
-    else:
-        user_data = get_login_user(request.form['username'])
-        if user_data == []:
-            raise ValueError("Invalid Username or Password")
-        do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
-                 request.form['username'], request.form['password'])
-        if session['logged_in']:
-            return redirect(url_for('show_lists'))
+    error = None
+    if request.method == 'POST':
+        try:
+            if request.form['toggle'] == 'register':
+                insert_user(request.form['username'],
+                            pbkdf2_sha256.encrypt(request.form['password']),
+                            request.form['email'])
+                user_data = get_login_user(request.form['username'])
+                do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
+                         request.form['username'], request.form['password'])
+                return redirect(url_for('show_lists_register_sucess'))
+            else:
+                user_data = get_login_user(request.form['username'])
+                if user_data == []:
+                    raise ValueError
+                do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
+                         request.form['username'], request.form['password'])
+                if session['logged_in']:
+                    return redirect(url_for('show_lists'))
+        except ValueError:
+            error = "Invalid Username or Password"
+    return render_template('login.html', error=error)
 
 
 @app.route('/lists/all', methods=['GET'])
