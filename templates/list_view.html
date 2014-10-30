@@ -21,9 +21,9 @@
             <form>
                 {% for item in items %}
                 <div class='row'>
-                    <div class='large-11 columns list-item'>
-                        <input type='button' class='check-button' value='check' data-item-id='{{item.item_id}}' data-list-id='{{list_id}}' />
-                        <input type='submit' class='delete-button' value=''/>
+                    <div class='large-11 columns list-item' id='item={{item.item_id}}'>
+                        <input type='button' class='check-button' id='checkbox-item={{item.item_id}}' data-item-id='{{item.item_id}}' data-list-id='{{list_id}}' />
+                        <input type='button' class='delete-button' value='' data-item-id='{{item.item_id}}' data-list-id='{{list_id}}'/>
                         <p class='list-item-name'>{{item.text}}</p>
                     </div>
                 </div>

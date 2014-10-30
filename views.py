@@ -67,9 +67,15 @@ def create_list():
     return redirect(url_for('show_lists'))
 
 
+@app.route('/lists/delete', methods=['GET', 'POST'])
+def remove_list():
+    list_id = request.form.get('list_id', 0, type=int)
+    delete_list(list_id)
+    return('DELETED')
+
+
 @app.route('/lists/<list_id>/check', methods=['GET', 'POST'])
 def check_item(list_id):
-    print(request.data)
     item_id = request.form.get('item_id', 0, type=int)
     update_item_checkmark(1, list_id, item_id)
     return('YOU CHECKED A THING' + str(list_id) + ' ' + str(item_id))
@@ -81,9 +87,10 @@ def add_item(id):
     return redirect(url_for('display_list', id=id))
 
 
-@app.route('/lists/<id>/remove', methods=['GET', 'POST'])
-def remove_item():
-    #delete_list_item(list_id, item_id)
+@app.route('/lists/<list_id>/remove', methods=['GET', 'POST'])
+def remove_item(list_id):
+    item_id = request.form.get('item_id', 0, type=int)
+    delete_list_item(list_id, item_id)
     return('YOU DELETED A THING!')
 
 if __name__ == '__main__':
