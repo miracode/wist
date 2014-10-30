@@ -39,13 +39,7 @@ def register():
             if request.form['toggle'] == 'register':
                 return new_register()
             else:
-                user_data = get_login_user(request.form['username'])
-                if user_data == []:
-                    raise ValueError
-                do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
-                         request.form['username'], request.form['password'])
-                if session['logged_in']:
-                    return redirect(url_for('show_lists'))
+                return login()
         except ValueError:
             error = "Invalid Username or Password"
     return render_template('login.html', error=error)
@@ -53,12 +47,22 @@ def register():
 
 def new_register():
     insert_user(request.form['username'],
-                            pbkdf2_sha256.encrypt(request.form['password']),
-                            request.form['email'])
+                pbkdf2_sha256.encrypt(request.form['password']),
+                request.form['email'])
     user_data = get_login_user(request.form['username'])
     do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
              request.form['username'], request.form['password'])
     return redirect(url_for('show_lists'))
+
+
+def login():
+    user_data = get_login_user(request.form['username'])
+    if user_data == []:
+        raise ValueError
+    do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
+             request.form['username'], request.form['password'])
+    if session['logged_in']:
+        return redirect(url_for('show_lists'))
 
 
 @app.route('/lists/all', methods=['GET'])
