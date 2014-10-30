@@ -22,11 +22,15 @@
                 {% for item in items %}
                 <div class='row'>
                     <div class='large-11 columns list-item' id='item={{item.item_id}}'>
-                        <input type='button' class='check-button' id='checkbox-item={{item.item_id}}' data-item-id='{{item.item_id}}' data-list-id='{{list_id}}' />
+                        <input type='button' class='check-button check-button-{{item.checked}}' id='checkbox-item={{item.item_id}}' data-item-id='{{item.item_id}}' data-list-id='{{list_id}}' />
                         {% if is_owner %}
                         <input type='button' class='delete-button' value='' data-item-id='{{item.item_id}}' data-list-id='{{list_id}}'/>
                         {% endif %}
+                        {% if item.checked == 0 %}
                         <p class='list-item-name'>{{item.text}}</p>
+                        {% else %}
+                        <p class='list-item-name strike'>{{item.text}}</p>
+                        {% endif %}
                     </div>
                 </div>
                 {% else %}
