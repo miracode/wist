@@ -34,12 +34,16 @@ def show_login():
 @app.route('/login', methods=['GET', 'POST'])
 def register():
     error = None
+    newRegister = False
     if request.method == 'POST':
         try:
             if request.form['toggle'] == 'register':
-                return new_register()
+                newRegister = True
+                #return new_register()
+                new_register()
             else:
-                return login()
+                login()
+            return redirect(url_for('show_lists'))
         except ValueError:
             error = "Invalid Username or Password"
     return render_template('login.html', error=error)
@@ -52,7 +56,6 @@ def new_register():
     user_data = get_login_user(request.form['username'])
     do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
              request.form['username'], request.form['password'])
-    return redirect(url_for('show_lists'))
 
 
 def login():
@@ -62,26 +65,15 @@ def login():
     do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
              request.form['username'], request.form['password'])
     if session['logged_in']:
-        return redirect(url_for('show_lists'))
+        return
 
 
 @app.route('/lists/all', methods=['GET'])
 def show_lists():
     lists = get_all_users_lists(session['user_id'])
-    user = get_user_name(session['user_id'])
-    message = "%s's Lists" % user
+    username = get_user_name(session['user_id'])
     return render_template('list_all.html', lists=lists,
-                    message=message, user_id=session['user_id'])
-
-
-# This doesn't work
-@app.route('/lists/all', methods=['GET'])
-def show_lists_register_sucess():
-    lists = get_all_users_lists(session['user_id'])
-    user = get_user_name(session['user_id'])
-    message = "Thank you for registering %s!" % user
-    return render_template('list_all.html', lists=lists,
-                    message=message, user_id=session['user_id'])
+                           username=username, user_id=session['user_id'])
 
 
 @app.route('/lists/<id>')
