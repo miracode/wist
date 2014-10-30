@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
-from flask import Flask
-from flask import g
 from flask import render_template
-from flask import abort
 from flask import request
 from flask import url_for
 from flask import redirect
 from flask import session
-import os
-import psycopg2
-from contextlib import closing
 from passlib.hash import pbkdf2_sha256
 from database import *
 
 
 def do_login(db_pwd, user_id, username='', passwd=''):
+    if username not in get_all_user_names():
+        # TODO: Redirect back to home page with message
+        raise ValueError("Invalid Username or Password")
     if not pbkdf2_sha256.verify(passwd, db_pwd):
-        raise ValueError
+        # TODO: redirect back to home page with message
+        raise ValueError("Invalid Username or Password")
     session['logged_in'] = True
     session['user_id'] = user_id
 
@@ -38,11 +36,16 @@ def show_login():
 @app.route('/login', methods=['GET', 'POST'])
 def register():
     if request.form['toggle'] == 'register':
-        insert_user(request.form['username'], pbkdf2_sha256.encrypt(request.form['password']), request.form['email'])
+        insert_user(request.form['username'],
+                    pbkdf2_sha256.encrypt(request.form['password']),
+                    request.form['email'])
         return('You registered')
     else:
         user_data = get_login_user(request.form['username'])
-        do_login(user_data[0]['user_passwd'], user_data[0]['user_id'], request.form['username'], request.form['password'])
+        if user_data == []:
+            raise ValueError("Invalid Username or Password")
+        do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
+                 request.form['username'], request.form['password'])
         if session['logged_in']:
             return redirect(url_for('show_lists'))
 
@@ -58,12 +61,14 @@ def display_list(id):
     items = get_all_list_items(id)
     this_list = get_list_info(id)[0]
     owner = get_user_name(this_list['owner_id'])[0]
-    return render_template('list_view.html', items=items, this_list=this_list, list_id=id, owner=owner)
+    return render_template('list_view.html', items=items, this_list=this_list,
+                           list_id=id, owner=owner)
 
 
 @app.route('/lists/create', methods=['GET', 'POST'])
 def create_list():
-    make_list(request.form['list-title'], request.form['list-description'], session['user_id'])
+    make_list(request.form['list-title'], request.form['list-description'],
+              session['user_id'])
     return redirect(url_for('show_lists'))
 
 
