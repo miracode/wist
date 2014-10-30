@@ -91,6 +91,10 @@ DB_LIST_INFO_BY_ID = """
 SELECT title, description, owner_id, list_id FROM lists
 WHERE list_id = %s
 """
+DB_ITEM_CHECK_BY_ID = """
+SELECT checked FROM list_items
+WHERE list_id = %s
+"""
 # DB UPDATE statements
 DB_USER_INFO_UPDATE = """
 UPDATE users
@@ -111,8 +115,7 @@ WHERE list_id = %s
 DB_LIST_ITEM_CHECK_UPDATE = """
 UPDATE list_items
 SET checked = %s
-WHERE list_id = %s
-AND item_id = %s
+WHERE item_id = %s
 """
 # DELETE statements
 DB_LIST_ITEM_DELETE = """
@@ -174,6 +177,7 @@ def teardown_request(exception):
     db = getattr(g, 'db', None)
     if db is not None:
         if exception and isinstance(exception, psycopg2.Error):
+            print(exception)
             # rollback if any errors
             db.rollback()
         else:
@@ -236,6 +240,14 @@ def add_list_user(list_id, user_id):
 """
 DB SELECTS/RETURNS
 """
+
+
+def get_is_checked(item_id):
+    '''Returns the checked value of a list item'''
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_ITEM_CHECK_BY_ID, [item_id])
+    return cur.fetchall()[0][0]
 
 
 def get_user_name(user_id):
@@ -345,11 +357,11 @@ def update_list_title_text(title, description, list_id):
     cur.execute(DB_LIST_TITLE_TEXT_UPDATE, [title, description, list_id])
 
 
-def update_item_checkmark(checked, list_id, item_id):
+def update_item_checkmark(checked, item_id):
     """Update list item checkmark"""
     con = get_database_connection()
     cur = con.cursor()
-    cur.execute(DB_LIST_ITEM_CHECK_UPDATE, [checked, list_id, item_id])
+    cur.execute(DB_LIST_ITEM_CHECK_UPDATE, [checked, item_id])
 
 """
 DB DELETIONS
