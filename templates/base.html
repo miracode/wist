@@ -12,12 +12,14 @@
 </head>
 <div id='top-nav'>
     <div class='row'>
-        <div class='large-4 columns nav-item'>
-            thing1
-        </div>
         <a href='{{url_for("show_lists")}}'>
         <div class='large-4 columns nav-item'>
             <span clas='top-link'>My Lists</span>
+        </div>
+        </a>
+        <a href='{{url_for("show_profile", user_id=user_id)}}'>
+        <div class='large-4 columns nav-item nav-item'>
+            <span class='top-link'>My Profile</span>
         </div>
         </a>
         <a href='{{url_for("logout")}}'>
