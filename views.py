@@ -53,7 +53,7 @@ def register():
 @app.route('/lists/all', methods=['GET'])
 def show_lists():
     lists = get_all_users_lists(session['user_id'])
-    return render_template('list_all.html', lists=lists)
+    return render_template('list_all.html', lists=lists, user_id=session['user_id'])
 
 
 @app.route('/lists/<id>')
@@ -62,14 +62,14 @@ def display_list(id):
     this_list = get_list_info(id)[0]
     owner = get_user_name(this_list['owner_id'])[0]
     return render_template('list_view.html', items=items, this_list=this_list,
-                           list_id=id, owner=owner)
+                           list_id=id, owner=owner, user_id=session['user_id'])
 
 
 @app.route('/lists/create', methods=['GET', 'POST'])
 def create_list():
     make_list(request.form['list-title'], request.form['list-description'],
               session['user_id'])
-    return redirect(url_for('show_lists'))
+    return redirect(url_for('show_lists', user_id=session['user_id']))
 
 
 @app.route('/lists/delete', methods=['GET', 'POST'])
@@ -89,14 +89,14 @@ def check_item(list_id):
 @app.route('/lists/<id>/add', methods=['GET', 'POST'])
 def add_item(id):
     insert_list_item(id, request.form['list-item-title'])
-    return redirect(url_for('display_list', id=id))
+    return redirect(url_for('display_list', id=id, user_id=session['user_id']))
 
 
 @app.route('/lists/<list_id>/remove', methods=['GET', 'POST'])
 def remove_item(list_id):
     item_id = request.form.get('item_id', 0, type=int)
     delete_list_item(list_id, item_id)
-    return redirect(url_for('display_list', id=list_id))
+    return redirect(url_for('display_list', id=list_id, user_id=session['user_id']))
 
 
 @app.route('/lists/<list_id>/share', methods=['GET', 'POST'])
@@ -113,6 +113,12 @@ def logout():
     session.pop('logged_in', None)
     session.pop('user_id', None)
     return redirect(url_for('show_login'))
+
+
+@app.route('/profile/<user_id>')
+def show_profile(user_id):
+    user_name = get_user_name(user_id)
+    return render_template('profile.html', user_name=user_name, user_id=user_id)
 
 if __name__ == '__main__':
     app.run(debug=True)
