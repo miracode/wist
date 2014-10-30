@@ -246,6 +246,16 @@ def get_user_name(user_id):
     return [dict(zip(keys, row)) for row in cur.fetchall()]
 
 
+def get_named_user(user_name):
+    '''returns user id when given name'''
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_USER_SELECT_BY_NAME, [user_name])
+    keys = ('user_id', 'user_passwd')
+    user = [dict(zip(keys, row)) for row in cur.fetchall()]
+    return user['user_id']
+
+
 def get_login_user(user_name):
     """Attempts to return the password and user id searching by username"""
     con = get_database_connection()

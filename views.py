@@ -16,7 +16,7 @@ from database import *
 
 def do_login(db_pwd, user_id, username='', passwd=''):
     if not pbkdf2_sha256.verify(passwd, db_pwd):
-        ValueError
+        raise ValueError
     session['logged_in'] = True
     session['user_id'] = user_id
 
@@ -92,6 +92,15 @@ def remove_item(list_id):
     item_id = request.form.get('item_id', 0, type=int)
     delete_list_item(list_id, item_id)
     return('YOU DELETED A THING!')
+
+
+@app.route('/lists/<list_id>/share', methods=['GET', 'POST'])
+def share_list(list_id):
+    user_name = request.form['shared_user']
+    user_data = get_login_user(user_name)
+    user_id = user_data[0]['user_id']
+    add_list_user(list_id, user_id)
+    return('YOU DID IT')
 
 if __name__ == '__main__':
     app.run(debug=True)

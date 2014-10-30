@@ -5,7 +5,7 @@ var toggleLink = $('#register-toggle')
 var toggleVar = $('#toggle')
 
 function registrify() {
-    emailBox.html("<input placeholder='Email' class='email-box' type='text' name='email' />")
+    emailBox.html("<input placeholder='Email' class='email-box' type='text' name='email' required/>")
     loginButton.attr('value', 'Register')
     toggleVar.attr('value', 'register')
     toggleLink.html('<a href=#>Login</a>')
