@@ -2,17 +2,18 @@
 {% block body %}
     <!--templating goes here-->
     <div class='row'>
-        <div class='large-3 columns profile-picture'>
+        <div class='large-3 columns'>
+            <input type='button' class='profile-picture' style="background-color: {{ user_color }}" value="{{ user_initial }}">
         </div>
         <div class='large-8 large-offset-1 columns'>
-            <h1>{{ user_name }}</h1>
-            <p>User info here</p>
+            <h2>{{ user_name }}</h2>
+            <h1>User Info:</h1>
+            <p>{{ user_info }}</p>
+            <form action="{{ url_for('update_user_info', user_id=user_id) }}" methods="POST" class="edit-info">
+                <textarea name="user_info" rows="5" cols="80"></textarea>
+                <input type="submit" value="Save Info"/>
+            </form>
+
         </div>
     </div>
-<!--     <div class='row'>
-        <div class='large-4 columns profile-link'><a href=#>thing1</a></div>
-        <div class='large-4 columns profile-link'><a href=#>thing2</a></div>
-        <div class='large-4 columns profile-link'><a href=#>thing3</a></div>
-    </div> -->
-    <!--end template-->
 {% endblock %}

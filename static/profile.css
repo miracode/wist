@@ -1,11 +1,21 @@
 .profile-picture {
     height: 240px;
     width: 240px;
-    background-color: black;
-    border-radius: 50%
+    border-radius: 50%;
+    color: white !important;
+    border: 0;
 }
 
 .profile-link {
     text-align: center;
     margin-top: 25px;
+}
+
+.initial {
+    text-align: center;
+    font-size: 32px;
+}
+
+.profile-picture:hover {
+    background-color: #66baff;
 }

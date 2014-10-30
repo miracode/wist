@@ -151,8 +151,16 @@ def logout():
 
 @app.route('/profile/<user_id>')
 def show_profile(user_id):
-    user_name = get_user_name(user_id)
-    return render_template('profile.html', user_name=user_name, user_id=user_id)
+    #user_name = get_user_name(user_id)
+    user_data = get_user_info(user_id)[0]
+    user_name = user_data['user_name']
+    user_info = user_data['user_info']
+    user_color = user_data['icon_color']
+    user_initial = user_name[0]
+    return render_template('profile.html', user_name=user_name,
+                           user_id=user_id, user_info= user_info,
+                           user_color=user_color, user_initial=user_initial)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

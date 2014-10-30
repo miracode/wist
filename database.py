@@ -91,6 +91,10 @@ DB_LIST_INFO_BY_ID = """
 SELECT title, description, owner_id, list_id FROM lists
 WHERE list_id = %s
 """
+DB_USER_INFO_BY_ID = """
+SELECT user_name, user_info, icon_color FROM users
+WHERE user_id = %s
+"""
 DB_ITEM_CHECK_BY_ID = """
 SELECT checked FROM list_items
 WHERE list_id = %s
@@ -146,7 +150,7 @@ where user_id = %s;
 app = Flask(__name__)
 
 app.config['DATABASE'] = os.environ.get('DATABASE_URL',
-                                        'dbname=wist user=mark')
+                                        'dbname=wist user=Michelle')
 app.config['ADMIN_USERNAME'] = os.environ.get('ADMIN_USERNAME', 'admin')
 app.config['ADMIN_PASSWORD'] = os.environ.get('ADMIN_PASSWORD',
                                               pbkdf2_sha256.encrypt('admin'))
@@ -330,6 +334,15 @@ def get_all_user_names():
     cur = con.cursor()
     cur.execute(DB_ALL_USERNAMES)
     return [row[0] for row in cur.fetchall()]
+
+
+def get_user_info(user_id):
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_USER_INFO_BY_ID, [user_id])
+    keys = ('user_name', 'user_info', 'icon_color')
+    return [dict(zip(keys, row)) for row in cur.fetchall()]
+
 
 """
 DB UPDATES
