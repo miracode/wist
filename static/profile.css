@@ -2,6 +2,8 @@
     height: 240px;
     width: 240px;
     border-radius: 50%;
+    color: white !important;
+    border: 0;
 }
 
 .profile-link {
@@ -14,15 +16,6 @@
     font-size: 32px;
 }
 
-.change-color {
+.profile-picture:hover {
     background-color: #66baff;
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
-    float: left;
-    margin-right: 25px;
-    margin-top: 2px;
-    margin-left: 2px;
-    padding: 0;
-    border: none;
 }
