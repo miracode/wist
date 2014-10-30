@@ -23,7 +23,9 @@
                 <div class='row'>
                     <div class='large-11 columns list-item' id='item={{item.item_id}}'>
                         <input type='button' class='check-button' id='checkbox-item={{item.item_id}}' data-item-id='{{item.item_id}}' data-list-id='{{list_id}}' />
+                        {% if is_owner %}
                         <input type='button' class='delete-button' value='' data-item-id='{{item.item_id}}' data-list-id='{{list_id}}'/>
+                        {% endif %}
                         <p class='list-item-name'>{{item.text}}</p>
                     </div>
                 </div>
@@ -56,6 +58,7 @@
                     <div class='profile-picture-small-side'></div>
                 </div>
             </div>
+            {% if is_owner %}
             <div class='row'>
                 <div class='large-12 columns list-options-item'>
                     <h3>Share your list</h3>
@@ -65,6 +68,7 @@
                     </form>
                 </div>
             </div>
+            {% endif %}
             <div class='row'>
                 <div class='large-12 columns list-options-item'>
                     <a href=#><h2>Options</h2></a>

@@ -92,9 +92,10 @@ def display_list(id):
     this_list = get_list_info(id)[0]
     owner = get_user_name(this_list['owner_id'])
     owner_id = this_list['owner_id']
+    is_owner = (owner_id == session['user_id'])
     return render_template('list_view.html', items=items, this_list=this_list,
                            list_id=id, owner=owner, user_id=session['user_id'],
-                           owner_id=owner_id)
+                           is_owner=is_owner)
 
 
 @app.route('/lists/create', methods=['GET', 'POST'])
