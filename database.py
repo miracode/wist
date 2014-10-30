@@ -140,7 +140,7 @@ where user_id = %s;
 app = Flask(__name__)
 
 app.config['DATABASE'] = os.environ.get('DATABASE_URL',
-                                        'dbname=wist user=Michelle')
+                                        'dbname=wist user=mark')
 app.config['ADMIN_USERNAME'] = os.environ.get('ADMIN_USERNAME', 'admin')
 app.config['ADMIN_PASSWORD'] = os.environ.get('ADMIN_PASSWORD',
                                               pbkdf2_sha256.encrypt('admin'))

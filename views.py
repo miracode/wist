@@ -107,5 +107,12 @@ def share_list(list_id):
     add_list_user(list_id, user_id)
     return('YOU DID IT')
 
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session.pop('logged_in', None)
+    session.pop('user_id', None)
+    return redirect(url_for('show_login'))
+
 if __name__ == '__main__':
     app.run(debug=True)
