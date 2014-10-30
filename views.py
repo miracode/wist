@@ -70,9 +70,11 @@ def login():
 def show_lists():
     lists = get_all_users_lists(session['user_id'])
     username = get_user_name(session['user_id'])
+    shared_list_ids = get_all_shared_lists(session['user_id'])
+    shared_lists = [get_list_info(list_id)[0] for list_id in shared_list_ids]
     return render_template('list_all.html', lists=lists,
-                           username=username, user_id=session['user_id'],
-                           newRegister=False)
+        shared_lists = shared_lists, user_id=session['user_id'],
+        username=username, newRegister = False)
 
 
 @app.route('/lists/welcome', methods=['GET'])
@@ -88,9 +90,11 @@ def welcome_lists():
 def display_list(id):
     items = get_all_list_items(id)
     this_list = get_list_info(id)[0]
-    owner = get_user_name(this_list['owner_id'])[0]
+    owner = get_user_name(this_list['owner_id'])
+    owner_id = this_list['owner_id']
     return render_template('list_view.html', items=items, this_list=this_list,
-                           list_id=id, owner=owner, user_id=session['user_id'])
+                           list_id=id, owner=owner, user_id=session['user_id'],
+                           owner_id=owner_id)
 
 
 @app.route('/lists/create', methods=['GET', 'POST'])

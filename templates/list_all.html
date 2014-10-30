@@ -17,6 +17,7 @@
     <div class='row'>
         <!-- list items -->
             <!-- for loop this shit -->
+            <h2>My Lists</h2>
             {% for list in lists %}
             <div class='row' id='{{list.list_id}}'>
                 <div class='large-11 columns list-item'>
@@ -28,6 +29,21 @@
             </div>
             {% else %}
             No lists yet!
+            {% endfor %}
+            <div class='row'>
+                <div class='large-12 columns line'></div>
+            </div>
+            <h2>Shared Lists</h2>
+            {% for list in shared_lists %}
+            <div class='row' id='{{list.list_id}}'>
+                <div class='large-11 columns list-item'>
+                    <a href='{{ url_for("display_list", id=list.list_id) }}'>
+                        <p class='list-item-name'>{{ list.title }}</p>
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            No shared lists!
             {% endfor %}
             <!-- begin form  -->
             <div class='row'>

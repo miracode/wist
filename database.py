@@ -75,6 +75,9 @@ DB_ALL_LIST_ITEMS = """
 SELECT item_id, text, checked FROM list_items
 WHERE list_id = %s
 """
+DB_ALL_SHARED_LISTS = """
+SELECT list_id FROM list_users WHERE user_id = %s
+"""
 DB_ALL_LIST_USERS = """
 SELECT user_id FROM list_users WHERE list_id = %s
 """
@@ -85,7 +88,7 @@ DB_USER_SELECT_BY_ID = """
 SELECT user_name FROM users WHERE user_id = %s
 """
 DB_LIST_INFO_BY_ID = """
-SELECT title, description, owner_id FROM lists
+SELECT title, description, owner_id, list_id FROM lists
 WHERE list_id = %s
 """
 # DB UPDATE statements
@@ -270,7 +273,7 @@ def get_list_info(list_id):
     con = get_database_connection()
     cur = con.cursor()
     cur.execute(DB_LIST_INFO_BY_ID, [list_id])
-    keys = ('title', 'description', 'owner_id')
+    keys = ('title', 'description', 'owner_id', 'list_id')
     return [dict(zip(keys, row)) for row in cur.fetchall()]
 
 
@@ -281,6 +284,14 @@ def get_all_users_lists(user_id):
     cur.execute(DB_ALL_USER_LISTS, [user_id])
     keys = ('list_id', 'title', 'description')
     return [dict(zip(keys, row)) for row in cur.fetchall()]
+
+
+def get_all_shared_lists(user_id):
+    """returns a list of all of the lists that the user is included in"""
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_ALL_SHARED_LISTS, [user_id])
+    return [row[0] for row in cur.fetchall()]
 
 
 def get_all_list_items(list_id):
@@ -370,4 +381,3 @@ def delete_user(user_id):
     con = get_database_connection()
     cur = con.cursor()
     cur.execute(DB_USER_DELETE, [user_id, user_id, user_id])
-
