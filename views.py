@@ -34,16 +34,14 @@ def show_login():
 @app.route('/login', methods=['GET', 'POST'])
 def register():
     error = None
-    newRegister = False
     if request.method == 'POST':
         try:
             if request.form['toggle'] == 'register':
-                newRegister = True
-                #return new_register()
                 new_register()
+                return redirect(url_for('welcome_lists'))
             else:
                 login()
-            return redirect(url_for('show_lists'))
+                return redirect(url_for('show_lists'))
         except ValueError:
             error = "Invalid Username or Password"
     return render_template('login.html', error=error)
@@ -73,7 +71,17 @@ def show_lists():
     lists = get_all_users_lists(session['user_id'])
     username = get_user_name(session['user_id'])
     return render_template('list_all.html', lists=lists,
-                           username=username, user_id=session['user_id'])
+                           username=username, user_id=session['user_id'],
+                           newRegister=False)
+
+
+@app.route('/lists/welcome', methods=['GET'])
+def welcome_lists():
+    lists = get_all_users_lists(session['user_id'])
+    username = get_user_name(session['user_id'])
+    return render_template('list_all.html', lists=lists,
+                           username=username, user_id=session['user_id'],
+                           newRegister=True)
 
 
 @app.route('/lists/<id>')
