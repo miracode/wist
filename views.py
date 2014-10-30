@@ -10,8 +10,9 @@ from database import *
 
 def do_login(db_pwd, user_id, username='', passwd=''):
     if username not in get_all_user_names():
-        # TODO: Redirect back to home page with message
-        raise ValueError("Invalid Username or Password")
+        # TODO: Redirect back to home page --with message--
+        return redirect(url_for('register'))
+        #raise ValueError("Invalid Username or Password")
     if not pbkdf2_sha256.verify(passwd, db_pwd):
         # TODO: redirect back to home page with message
         raise ValueError("Invalid Username or Password")
@@ -39,7 +40,10 @@ def register():
         insert_user(request.form['username'],
                     pbkdf2_sha256.encrypt(request.form['password']),
                     request.form['email'])
-        return('You registered')
+        user_data = get_login_user(request.form['username'])
+        do_login(user_data[0]['user_passwd'], user_data[0]['user_id'],
+                 request.form['username'], request.form['password'])
+        return redirect(url_for('show_lists')) # TODO pass a msg "you registerd"
     else:
         user_data = get_login_user(request.form['username'])
         if user_data == []:
