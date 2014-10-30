@@ -15,8 +15,9 @@ from database import *
 
 
 def do_login(db_pwd, user_id, username='', passwd=''):
+    if username not in
     if not pbkdf2_sha256.verify(passwd, db_pwd):
-        ValueError
+        raise ValueError
     session['logged_in'] = True
     session['user_id'] = user_id
 
