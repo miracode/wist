@@ -97,6 +97,7 @@
     width: 90%
 }
 
+.list-delete-button,
 .delete-button {
     background-color: #f00;
     height: 30px;

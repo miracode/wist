@@ -16,6 +16,7 @@
             {% for list in lists %}
             <div class='row' id='{{list.list_id}}'>
                 <div class='large-11 columns list-item'>
+                    <input type='button' class='list-delete-button' value='' data-list-id='{{list.list_id}}'/>
                     <a href='{{ url_for("display_list", id=list.list_id) }}'>
                         <p class='list-item-name'>{{ list.title }}</p>
                     </a>
