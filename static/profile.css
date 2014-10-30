@@ -1,11 +1,28 @@
 .profile-picture {
     height: 240px;
     width: 240px;
-    background-color: black;
-    border-radius: 50%
+    border-radius: 50%;
 }
 
 .profile-link {
     text-align: center;
     margin-top: 25px;
+}
+
+.initial {
+    text-align: center;
+    font-size: 32px;
+}
+
+.change-color {
+    background-color: #66baff;
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    float: left;
+    margin-right: 25px;
+    margin-top: 2px;
+    margin-left: 2px;
+    padding: 0;
+    border: none;
 }

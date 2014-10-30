@@ -2,11 +2,19 @@
 {% block body %}
     <!--templating goes here-->
     <div class='row'>
-        <div class='large-3 columns profile-picture'>
+        <div class='large-3 columns profile-picture' style="background-color: {{ user_color }}">
+            <p class='initial'>M</p>
         </div>
+        <!--  -->
         <div class='large-8 large-offset-1 columns'>
-            <h1>{{ user_name }}</h1>
-            <p>User info here</p>
+            <h2>{{ user_name }}</h2>
+            <h1>User Info:</h1>
+            <p>{{ user_info }}</p>
+        </div>
+        <div class='row'>
+            <div class='columns color-button'>
+                <input type="button" class='change-color' name="ChangeColor">
+            </div>
         </div>
     </div>
 <!--     <div class='row'>
