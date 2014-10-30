@@ -91,6 +91,10 @@ DB_LIST_INFO_BY_ID = """
 SELECT title, description, owner_id, list_id FROM lists
 WHERE list_id = %s
 """
+DB_ITEM_CHECK_BY_ID = """
+SELECT checked FROM list_items
+WHERE list_id = %s
+"""
 # DB UPDATE statements
 DB_USER_INFO_UPDATE = """
 UPDATE users
@@ -236,6 +240,14 @@ def add_list_user(list_id, user_id):
 """
 DB SELECTS/RETURNS
 """
+
+
+def get_is_checked(item_id):
+    '''Returns the checked value of a list item'''
+    con = get_database_connection()
+    cur = con.cursor()
+    cur.execute(DB_ITEM_CHECK_BY_ID, [item_id])
+    return cur.fetchall()[0][0]
 
 
 def get_user_name(user_id):
