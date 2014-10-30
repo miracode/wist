@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask
 from flask import g
-from flask import abort
-from flask import request
-from flask import url_for
-from flask import redirect
-from flask import session
 import os
 import psycopg2
 from contextlib import closing
@@ -376,6 +371,3 @@ def delete_user(user_id):
     cur = con.cursor()
     cur.execute(DB_USER_DELETE, [user_id, user_id, user_id])
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
