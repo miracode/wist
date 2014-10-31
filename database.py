@@ -102,7 +102,7 @@ WHERE user_id = %s
 """
 DB_ITEM_CHECK_BY_ID = """
 SELECT checked FROM list_items
-WHERE list_id = %s
+WHERE item_id = %s
 """
 # DB UPDATE statements
 DB_USER_INFO_UPDATE = """
