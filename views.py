@@ -152,23 +152,23 @@ def logout():
     return redirect(url_for('show_login'))
 
 
-@app.route('/profile/<user_id>', methods=['GET', 'POST'])
-def show_profile(user_id):
+@app.route('/profile/<viewing_user_id>', methods=['GET', 'POST'])
+def show_profile(viewing_user_id):
     #user_name = get_user_name(user_id)
-    user_data = get_user_info(user_id)[0]
+    user_data = get_user_info(viewing_user_id)[0]
     user_name = user_data['user_name']
     user_info = user_data['user_info']
     user_color = user_data['icon_color']
     user_initial = user_name[0]
     try:
-        is_owner = (int(user_id) == session['user_id'])
+        is_owner = (int(viewing_user_id) == session['user_id'])
     except KeyError:
         # This will catch for user that is not logged in
         is_owner = False
     return render_template('profile.html', user_name=user_name,
-                           user_id=user_id, user_info=user_info,
+                           user_id=session['user_id'], user_info=user_info,
                            user_color=user_color, user_initial=user_initial,
-                           is_owner=is_owner)
+                           is_owner=is_owner, viewing_user_id=viewing_user_id)
 
 
 @app.route('/profile/<user_id>/submit', methods=['GET', 'POST'])
