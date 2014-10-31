@@ -10,7 +10,7 @@
             <h1>User Info:</h1>
             <p>{{ user_info }}</p>
             {% if is_owner %}
-            <form action="{{ url_for('submit_user_info', user_id=viewing_user_id) }}" method="POST" class="edit_info">
+            <form action="{{ url_for('submit_user_info', user_id=user_id) }}" method="POST" class="edit_info">
                 <div class="field">
                     <textarea name="user_info" class='user-info' id="user_info" rows="2" placeholder="Edit User Info"></textarea>
                     <input type="submit" class='medium round button save-button' value="Save" name="Save"/>
