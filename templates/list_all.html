@@ -2,7 +2,6 @@
 {% block body %}
     <!--templating goes here-->
     <div class='row'>
-        <div class='large-1 columns profile-picture-small'></div>
         <div class='large-11 columns'>
             {% if newRegister %}
             <h1 class='user-title'>Thank you for registering {{ username }}!</h1>
@@ -45,6 +44,9 @@
             {% else %}
             No shared lists!
             {% endfor %}
+            <div class='row'>
+                <div class='large-12 columns line'></div>
+            </div>
             <!-- begin form  -->
             <div class='row'>
                 <div class='large-11 columns form-container'>
