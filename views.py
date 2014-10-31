@@ -157,9 +157,15 @@ def show_profile(user_id):
     user_info = user_data['user_info']
     user_color = user_data['icon_color']
     user_initial = user_name[0]
+    try:
+        is_owner = (int(user_id) == session['user_id'])
+    except KeyError:
+        # This will catch for user that is not logged in
+        is_owner = False
     return render_template('profile.html', user_name=user_name,
                            user_id=user_id, user_info=user_info,
-                           user_color=user_color, user_initial=user_initial)
+                           user_color=user_color, user_initial=user_initial,
+                           is_owner=is_owner)
 
 
 @app.route('/profile/<user_id>/submit', methods=['GET', 'POST'])

@@ -9,13 +9,14 @@
             <h2>{{ user_name }}</h2>
             <h1>User Info:</h1>
             <p>{{ user_info }}</p>
+            {% if is_owner %}
             <form action="{{ url_for('submit_user_info', user_id=user_id) }}" method="POST" class="edit_info">
                 <div class="field">
                     <textarea name="user_info" id="user_info" rows="5" cols="80" placeholder="Edit User Info"></textarea>
                     <input type="submit" value="Save" name="Save"/>
                 </div>
             </form>
-
+            {% endif %}
         </div>
     </div>
 {% endblock %}
