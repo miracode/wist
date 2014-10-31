@@ -141,7 +141,10 @@ def share_list(list_id):
     user_name = request.form['shared_user']
     user_data = get_login_user(user_name)
     user_id = user_data[0]['user_id']
-    add_list_user(list_id, user_id)
+    try:
+        add_list_user(list_id, user_id)
+    except psycopg2.IntegrityError:
+        return redirect(url_for('display_list', id=list_id))
     return redirect(url_for('display_list', id=list_id))
 
 
