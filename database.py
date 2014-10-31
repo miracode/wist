@@ -76,6 +76,7 @@ ORDER BY list_id
 DB_ALL_LIST_ITEMS = """
 SELECT item_id, text, checked FROM list_items
 WHERE list_id = %s
+ORDER BY item_id
 """
 DB_ALL_SHARED_LISTS = """
 SELECT list_id FROM list_users WHERE user_id = %s
