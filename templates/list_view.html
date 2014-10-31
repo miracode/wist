@@ -7,14 +7,21 @@
         </div>
     </div>
     <div class='row'>
-        <div class='large-1 columns profile-picture-small'></div>
         <div class='large-11 columns'>
-            <p class='created-by'>CREATED BY {{owner}}</p>
+            <p class='created-by'>CREATED BY <a href='/profile/{{owner_id}}'>{{owner}}</a></p>
         </div>
     </div>
     <div class='row'>
         <div class='large-12 columns line'></div>
     </div>
+    {% if this_list.description%}
+    <div class='row'>
+        <p>{{this_list.description}}</p>
+    </div>
+    <div class='row'>
+        <div class='large-12 columns short-line'></div>
+    </div>
+    {% endif %}
     <div class='row'>
         <!-- list items -->
         <div class='large-9 columns list-display'>
@@ -53,29 +60,34 @@
             <div class='row'>
                 <div class='large-12 columns list-options-item'>
 
-                    <h2>Users</h2>
+                    <h2 class='list-option-header'>Users</h2>
+<!--                     <div class='profile-picture-small-side'></div>
                     <div class='profile-picture-small-side'></div>
                     <div class='profile-picture-small-side'></div>
                     <div class='profile-picture-small-side'></div>
                     <div class='profile-picture-small-side'></div>
-                    <div class='profile-picture-small-side'></div>
-                    <div class='profile-picture-small-side'></div>
+                    <div class='profile-picture-small-side'></div> -->
+                    {% for user in shared_users%}
+                    <p><a href='/profile/{{user.user_id}}'>{{user.user_name}}</a></p>
+                    {% else %}
+                    <p>This Wist is not shared!</p>
+                    {% endfor %}
                 </div>
             </div>
             {% if is_owner %}
             <div class='row'>
                 <div class='large-12 columns list-options-item'>
-                    <h3>Share your list</h3>
+                    <h3 class='list-option-header'>Share your list</h3>
                     <form method='POST' action='{{url_for("share_list", list_id=list_id)}}'>
-                        <input type='text' name='shared_user'>
-                        <input type='submit' value='Share!'>
+                        <input type='text' name='shared_user' class='share-name-box'>
+                        <input type='submit' value='Share!' class='small round button share-button'>
                     </form>
                 </div>
             </div>
             {% endif %}
             <div class='row'>
                 <div class='large-12 columns list-options-item'>
-                    <a href=#><h2>Options</h2></a>
+                    <a href=#><h2 class='list-option-header'>Options</h2></a>
                 </div>
             </div>
         </div>
