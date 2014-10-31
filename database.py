@@ -49,6 +49,7 @@ INSERT INTO colors VALUES ('green');
 INSERT INTO colors VALUES ('blue');
 INSERT INTO colors VALUES ('purple');
 """
+# TODO: add to list_usrs PRIMARY KEY (list_id, user_id)
 # DB INSERT statements
 DB_USER_INSERT = """
 INSERT INTO users (user_name, user_passwd, user_email) values (%s, %s, %s)
