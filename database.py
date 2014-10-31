@@ -43,7 +43,8 @@ CREATE TABLE list_items (
 );
 CREATE TABLE list_users (
     list_id INT REFERENCES lists (list_id),
-    user_id INT REFERENCES users (user_id)
+    user_id INT REFERENCES users (user_id),
+    PRIMARY KEY (list_id, user_id)
 );
 INSERT INTO colors VALUES ('green');
 INSERT INTO colors VALUES ('blue');
@@ -132,6 +133,8 @@ DB_LIST_DELETE = """
 DELETE FROM list_items
 WHERE list_id = %s;
 DELETE FROM lists
+WHERE list_id = %s;
+DELETE FROM list_users
 WHERE list_id = %s
 """
 DB_LIST_USER_DELETE = """
@@ -393,7 +396,7 @@ def delete_list(list_id):
     """Delete an entire list"""
     con = get_database_connection()
     cur = con.cursor()
-    cur.execute(DB_LIST_DELETE, [list_id, list_id])
+    cur.execute(DB_LIST_DELETE, [list_id, list_id, list_id])
 
 
 def delete_list_user(list_id, user_id):
