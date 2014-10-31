@@ -117,7 +117,7 @@ def remove_list():
 @app.route('/lists/<list_id>/check', methods=['GET', 'POST'])
 def check_item(list_id):
     item_id = request.form.get('item_id', 0, type=int)
-    is_checked = get_is_checked(list_id)
+    is_checked = get_is_checked(item_id)
     new_check = (is_checked + 1) % 2
     update_item_checkmark(new_check, item_id)
     return('YOU CHECKED A THING' + str(list_id) + ' ' + str(item_id))
