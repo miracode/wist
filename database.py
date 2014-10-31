@@ -81,7 +81,10 @@ DB_ALL_SHARED_LISTS = """
 SELECT list_id FROM list_users WHERE user_id = %s
 """
 DB_ALL_LIST_USERS = """
-SELECT user_id FROM list_users WHERE list_id = %s
+SELECT list_users.user_id, users.user_name
+FROM list_users, users
+WHERE list_users.list_id = %s
+AND list_users.user_id = users.user_id
 """
 DB_USER_SELECT_BY_NAME = """
 SELECT user_id, user_passwd FROM users WHERE user_name = %s
@@ -154,7 +157,7 @@ where user_id = %s;
 app = Flask(__name__)
 
 app.config['DATABASE'] = os.environ.get('DATABASE_URL',
-                                        'dbname=wist user=Michelle')
+                                        'dbname=wist user=mark')
 app.config['ADMIN_USERNAME'] = os.environ.get('ADMIN_USERNAME', 'admin')
 app.config['ADMIN_PASSWORD'] = os.environ.get('ADMIN_PASSWORD',
                                               pbkdf2_sha256.encrypt('admin'))
@@ -328,7 +331,7 @@ def get_all_list_users(list_id):
     con = get_database_connection()
     cur = con.cursor()
     cur.execute(DB_ALL_LIST_USERS, [list_id])
-    keys = ('list_id', )
+    keys = ('user_id', 'user_name')
     return [dict(zip(keys, row)) for row in cur.fetchall()]
 
 

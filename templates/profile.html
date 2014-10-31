@@ -12,8 +12,8 @@
             {% if is_owner %}
             <form action="{{ url_for('submit_user_info', user_id=user_id) }}" method="POST" class="edit_info">
                 <div class="field">
-                    <textarea name="user_info" id="user_info" rows="5" cols="80" placeholder="Edit User Info"></textarea>
-                    <input type="submit" value="Save" name="Save"/>
+                    <textarea name="user_info" class='user-info' id="user_info" rows="2" placeholder="Edit User Info"></textarea>
+                    <input type="submit" class='medium round button save-button' value="Save" name="Save"/>
                 </div>
             </form>
             {% endif %}

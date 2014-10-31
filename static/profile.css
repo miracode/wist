@@ -19,3 +19,17 @@
 .profile-picture:hover {
     background-color: #66baff;
 }
+
+.user-info {
+    width: 85%;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 20px;
+    border: 2px solid #ccc;
+    line-height: 30px;
+}
+
+.save-button {
+    margin-top: 15px;
+    width: 25%;
+}

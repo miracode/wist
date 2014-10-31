@@ -93,9 +93,11 @@ def display_list(id):
     owner = get_user_name(this_list['owner_id'])
     owner_id = this_list['owner_id']
     is_owner = (owner_id == session['user_id'])
+    shared_users = get_all_list_users(id)
     return render_template('list_view.html', items=items, this_list=this_list,
                            list_id=id, owner=owner, user_id=session['user_id'],
-                           is_owner=is_owner)
+                           is_owner=is_owner, owner_id=this_list['owner_id'],
+                           shared_users=shared_users)
 
 
 @app.route('/lists/create', methods=['GET', 'POST'])
@@ -140,6 +142,7 @@ def share_list(list_id):
     user_data = get_login_user(user_name)
     user_id = user_data[0]['user_id']
     add_list_user(list_id, user_id)
+    return redirect(url_for('display_list', id=list_id))
 
 
 @app.route('/logout', methods=['GET', 'POST'])
